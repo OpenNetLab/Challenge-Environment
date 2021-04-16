@@ -1,3 +1,0 @@
-[submodule "vmaf"]
-	path = vmaf
-	url = https://github.com/Netflix/vmaf.git
