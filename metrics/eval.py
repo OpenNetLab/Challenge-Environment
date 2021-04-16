@@ -1,14 +1,17 @@
-import os, sys, argparse, json
+import os, sys, argparse, json, shutil
 
 sys.path.append(os.getcwd())
 
 from metrics.eval_audio import AudioEvaluation
+from metrics.eval_video import VideoEvaluation
 
 
 description = \
 '''
 Quickly Start:
-python3 eval.py --src_video {src_video} --dst_video {dst_video}  --dst_audio {dst_audio} --dnsmos_uri {dnsmos_uri} --dnsmos_key {dnsmos_key}
+python3 eval.py --src_video {src_video} --dst_video {dst_video} \
+                --dst_audio {dst_audio} --dnsmos_uri {dnsmos_uri} --dnsmos_key {dnsmos_key} \
+                --output {output json file}
 '''
 
 def init_argparse():
@@ -42,14 +45,34 @@ def init_argparse():
     return args
 
 
+def get_audio_score(args, eval_args):
+    audio_eval_tool = AudioEvaluation(args.audio_eval_method, eval_args=eval_args)
+    audio_out = audio_eval_tool.eval(args.dst_audio)
+    return audio_out
+
+
+def get_video_score(args, eval_args):
+    video_eval_tool = VideoEvaluation(args.video_eval_method, eval_args=eval_args)
+    video_out = video_eval_tool.eval(args.src_video, args.dst_video)
+    return video_out
+
+
 def init_tmp_dir():
     if os.path.exists("tmp"):
-        os.rmdir("tmp")
+        shutil.rmtree("tmp")
     os.mkdir("tmp")
 
 
 def fill_args(args):
     ret = {}
+    # for video
+    if "video_size" in args:
+        ret["video_size"] = args.video_size
+    if "pixel_format" in args:
+        ret["pixel_format"] = args.pixel_format
+    if "bitdepth" in args:
+        ret["bitdepth"] = args.bitdepth
+    # for audio
     if "dnsmos_uri" in args:
         ret["dnsmos_uri"] = args.dnsmos_uri
     if "dnsmos_key" in args:
@@ -69,11 +92,13 @@ if __name__ == "__main__":
     init_tmp_dir()
     out_dict = {}
     if (args.method == "simple"):
-        audio_eval_tool = AudioEvaluation(args.audio_eval_method, eval_args=eval_args)
-        audio_out = audio_eval_tool.eval(args.dst_audio)
+        out_dict["audio"] = get_audio_score(args, eval_args)
+        out_dict["video"] = get_video_score(args, eval_args)
+    elif (args.method == "video"):
+        out_dict["video"] = get_video_score(args, eval_args)
+    elif (args.method == "audio"):
+        out_dict["audio"] = get_audio_score(args, eval_args)
 
-        out_dict["audio"] = audio_out
-        
     print(out_dict)
     with open(args.output, 'w') as f:
         f.write(json.dumps(out_dict))
