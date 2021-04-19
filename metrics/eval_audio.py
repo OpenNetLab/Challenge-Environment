@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import argparse
 import glob
 import json
@@ -9,6 +11,13 @@ import requests
 import soundfile as sf
 
 from urllib.parse import urlparse, urljoin
+
+
+description = \
+'''
+Quickly Start:
+python3 eval_audio.py --dst_audio {dst_audio} --dnsmos_uri {dnsmos_uri} --dnsmos_key {dnsmos_key}
+'''
 
 
 class AudioEvaluation():
@@ -60,3 +69,51 @@ class AudioEvaluation():
             score_dict = self.eval_by_dnsmos(dst_audio_path)
 
         return score_dict
+
+
+def init_audio_argparse():
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("--output", type=str, default=None, help="the path of output file")
+    # for audio evaluation
+    parser.add_argument("--audio_eval_method", type=str, default="dnsmos", help="the method to evaluate audio, like DNSMOS")
+    parser.add_argument("--dst_audio", type=str, default=None, help="the path of destination audio")
+    parser.add_argument("--audio_sample_rate", type=str, default='16000', help="the sample rate of audio")
+    parser.add_argument("--audio_channel", type=str, default='1', help="the numbers of audio channels")
+    # for DNSMOS
+    parser.add_argument("--dnsmos_uri", type=str, default=None, help="the uri to evaluate audio provided by DNSMOS")
+    parser.add_argument("--dnsmos_key", type=str, default=None, help="the key to evaluate audio provided by DNSMOS")
+
+    return parser
+
+
+def get_audio_score(args, eval_args):
+    audio_eval_tool = AudioEvaluation(args.audio_eval_method, eval_args=eval_args)
+    audio_out = audio_eval_tool.eval(args.dst_audio)
+    return audio_out
+
+
+def fill_audio_args(args):
+    ret = {}
+    if "dnsmos_uri" in args:
+        ret["dnsmos_uri"] = args.dnsmos_uri
+    if "dnsmos_key" in args:
+        ret["dnsmos_key"] = args.dnsmos_key
+    if "audio_sample_rate" in args:
+        ret["audio_sample_rate"] = args.audio_sample_rate
+    if "audio_channel" in args:
+        ret["audio_channel"] = args.audio_channel
+
+    return ret
+
+
+if __name__ == "__main__":
+    parser = init_audio_argparse()
+    args = parser.parse_args()
+    eval_args = fill_audio_args(args)
+    out_dict = {}
+    if (args.audio_eval_method == "dnsmos"):
+        out_dict["audio"] = get_audio_score(args, eval_args)
+        
+    print(out_dict)
+    with open(args.output, 'w') as f:
+        f.write(json.dumps(out_dict))
