@@ -233,6 +233,6 @@ if __name__ == "__main__":
     if (args.video_eval_method == "vmaf"):
         out_dict["video"] = get_video_score(args, eval_args)
         
-    print(out_dict)
+    print(json.loads(json.dumps(out_dict)))
     with open(args.output, 'w') as f:
         f.write(json.dumps(out_dict))
