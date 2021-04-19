@@ -1,7 +1,5 @@
 docker_image := chanllenge-env
 docker_file := dockers/Dockerfile
-docker_container := chanllenge-env
-docker_work_dir := /home/vmaf
 
 all: chanllenge-env
 
