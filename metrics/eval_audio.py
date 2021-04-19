@@ -114,6 +114,6 @@ if __name__ == "__main__":
     if (args.audio_eval_method == "dnsmos"):
         out_dict["audio"] = get_audio_score(args, eval_args)
         
-    print(out_dict)
+    print(json.loads(json.dumps(out_dict)))
     with open(args.output, 'w') as f:
         f.write(json.dumps(out_dict))
