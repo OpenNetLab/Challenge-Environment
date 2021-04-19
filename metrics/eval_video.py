@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import os, sys
+import os, sys, argparse, json, shutil
+
+
+description = \
+'''
+Quickly Start:
+python3 eval_video.py --src_video {src_video} --dst_video {dst_video} --output {output_path}
+'''
 
 
 class VideoEvaluation():
@@ -178,18 +185,54 @@ class VideoEvaluation():
         return ret
 
 
-def fill_args(args):
+def get_video_score(args, eval_args):
+    video_eval_tool = VideoEvaluation(args.video_eval_method, eval_args=eval_args)
+    video_out = video_eval_tool.eval(args.src_video, args.dst_video)
+    return video_out
+
+
+def init_video_argparse():
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument("--output", type=str, default=None, help="the path of output file")
+    # for video evaluation
+    parser.add_argument("--video_eval_method", type=str, default="vmaf", help="the method to evaluate video, like vmaf")
+    parser.add_argument("--src_video", type=str, default=None, help="the path of source video")
+    parser.add_argument("--dst_video", type=str, default=None, help="the path of destination video")
+    parser.add_argument("--frame_align", type=str, default="ffmpeg", help="how to do frame alignment")
+    # required by the video format of yuv raw video
+    parser.add_argument("--video_size", type=str, default=None, help="the size of video, like 1920x1080.Required by the video format of yuv")
+    parser.add_argument("--pixel_format", type=str, default=None, help="pixel format (420/422/444)")
+    parser.add_argument("--bitdepth", type=str, default=None, help="bitdepth (8/10/12)")
+
+    return parser
+
+
+def init_tmp_dir():
+    if os.path.exists("tmp"):
+        shutil.rmtree("tmp")
+    os.mkdir("tmp")
+
+
+def fill_video_args(args):
     ret = dict()
-    if args.frame_align:
-        ret["frame_align"] = args.frame_align
-    if args.output:
-        ret["output"] = args.output
-    if args.video_size:
-        ret["video_size"] = args.video_size
-    if args.output:
-        ret["pixel_format"] = args.pixel_format
-    if args.video_size:
-        ret["bitdepth"] = args.bitdepth
+    ret["frame_align"] = args.frame_align
+    ret["output"] = args.output
+    ret["video_size"] = args.video_size
+    ret["pixel_format"] = args.pixel_format
+    ret["bitdepth"] = args.bitdepth
 
     return ret if len(ret) else None
 
+
+if __name__ == "__main__":
+    parser = init_video_argparse()
+    args = parser.parse_args()
+    eval_args = fill_video_args(args)
+    init_tmp_dir()
+    out_dict = {}
+    if (args.video_eval_method == "vmaf"):
+        out_dict["video"] = get_video_score(args, eval_args)
+        
+    print(out_dict)
+    with open(args.output, 'w') as f:
+        f.write(json.dumps(out_dict))
