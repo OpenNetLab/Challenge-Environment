@@ -9,7 +9,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def check_network_score(dst_network_log):
-    file_path = cur_dir + "/../metrics/eval_network.py"
+    file_path = cur_dir + "/../eval_network.py"
     cmd = ["python3", file_path, "--network_eval_method", "normal", "--dst_network_log", dst_network_log]
     cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
     
