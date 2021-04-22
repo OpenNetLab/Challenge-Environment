@@ -6,7 +6,7 @@ from utils.video_info import VideoInfo
 from tempfile import NamedTemporaryFile
 
 
-class EvalMethod(object):
+class VideoEvalMethod(object):
     def __init__(self):
         self.method_name = "base"
         self.support_type = []
@@ -16,9 +16,9 @@ class EvalMethod(object):
         pass
 
 
-class EvalMethodVmaf(EvalMethod):
+class VideoEvalMethodVmaf(VideoEvalMethod):
     def __init__(self):
-        super(EvalMethodVmaf, self).__init__()
+        super(VideoEvalMethodVmaf, self).__init__()
         self.method_name = "ffmpeg"
         self.support_type = ["yuv4mpegpipe", "rawvideo"]
         self.support_type_abbreviation = ["y4m", "yuv"]

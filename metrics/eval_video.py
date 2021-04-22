@@ -4,19 +4,19 @@
 import os, sys, argparse, json, subprocess
 from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
-from utils.eval_method import EvalMethodVmaf, EvalMethod
-from utils.align_method import AlignMethodFfmpeg, AlignMethod
+from utils.video_eval_method import VideoEvalMethodVmaf, VideoEvalMethod
+from utils.video_align_method import VideoAlignMethodFfmpeg, VideoAlignMethod
 
 
 description = \
 '''
-This file provide multi method to evaluate video quality based on class of EvalMethod. 
-For example, the class of EvalMethodVmaf inherit from EvalMethod can evaluate video quality by using vmaf tools.
+This file provide multi method to evaluate video quality based on class of VideoEvalMethod. 
+For example, the class of VideoEvalMethodVmaf inherit from VideoEvalMethod can evaluate video quality by using vmaf tools.
 '''
 
 
 class VideoEvaluation(object):
-    def __init__(self, eval_method : EvalMethod, align_method : AlignMethod, args):
+    def __init__(self, eval_method : VideoEvalMethod, align_method : VideoAlignMethod, args):
         self.eval_method = eval_method
         self.align_method = align_method
         self.args = args
@@ -87,7 +87,7 @@ class VideoEvaluation(object):
         return ret
 
 
-def get_video_score(eval_method : EvalMethod, align_method : AlignMethod, args):
+def get_video_score(eval_method : VideoEvalMethod, align_method : VideoAlignMethod, args):
     video_eval_tool = VideoEvaluation(eval_method, align_method, args)
     video_out = video_eval_tool.eval(args.src_video, args.dst_video)
     
@@ -118,10 +118,10 @@ if __name__ == "__main__":
     align_method = None
 
     if (args.video_eval_method == "vmaf"):
-        eval_method = EvalMethodVmaf()
+        eval_method = VideoEvalMethodVmaf()
     
     if (args.frame_align == "ffmpeg"):
-        align_method = AlignMethodFfmpeg()
+        align_method = VideoAlignMethodFfmpeg()
 
     out_dict["video"] = get_video_score(eval_method, align_method, args)
         

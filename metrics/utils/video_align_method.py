@@ -6,7 +6,7 @@ from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
 
 
-class AlignMethod(object):
+class VideoAlignMethod(object):
     def __init__(self):
         self.align_method_name = "base"
 
@@ -14,9 +14,9 @@ class AlignMethod(object):
         pass
 
 
-class AlignMethodFfmpeg(AlignMethod):
+class VideoAlignMethodFfmpeg(VideoAlignMethod):
     def __init__(self):
-        super(AlignMethodFfmpeg, self).__init__()
+        super(VideoAlignMethodFfmpeg, self).__init__()
         self.align_method_name = "ffmpeg"
 
     def change_video_fps_by_ffmepg(self, video_info : VideoInfo, fps : int):
