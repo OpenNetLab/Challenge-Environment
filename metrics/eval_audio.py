@@ -43,7 +43,12 @@ def init_audio_argparse():
     return parser
 
 
-def get_audio_score(eval_method, args):
+def get_audio_score(args):
+    eval_method = None
+
+    if (args.audio_eval_method == "dnsmos"):
+        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
+        
     audio_eval_tool = AudioEvaluation(eval_method, args)
     audio_out = audio_eval_tool.eval(args.dst_audio)
 
@@ -54,12 +59,7 @@ if __name__ == "__main__":
     parser = init_audio_argparse()
     args = parser.parse_args()
     out_dict = {}
-    eval_method = None
-
-    if (args.audio_eval_method == "dnsmos"):
-        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
-
-    out_dict["audio"] = get_audio_score(eval_method, args)
+    out_dict["audio"] = get_audio_score(args)
         
     if args.output:
         with open(args.output, 'w') as f:
