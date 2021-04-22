@@ -21,8 +21,8 @@ steps:
 - script: make
   displayName: 'build challenge environment'
 
-- script: pytest tests/test_eval_audio.py --dnsmos_uri $(dnsmosURI) --dnsmos_key $(dnsmosKey)
-  displayName: 'Test audio evaluation'
+- script: docker run --rm challenge-env python3 -m pytest metrics/tests/test_eval_audio.py --dnsmos_uri $(dnsmosURI) --dnsmos_key $(dnsmosKey)
+  displayName: 'Test evaluation of audio'
 
 - script: docker image tag challenge-env:latest $(dockerRegistry)/challenge-env:latest
   displayName: 'Tag alphartc image'
