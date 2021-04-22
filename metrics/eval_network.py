@@ -29,7 +29,7 @@ class NetworkEvaluation():
 def get_network_score(args):
     eval_method = None
 
-    if (args.network_eval_method == "normal"):
+    if args.network_eval_method == "normal":
         eval_method = NetEvalMethodNormal()
     
     network_eval_tool = NetworkEvaluation(eval_method, args)
@@ -40,10 +40,10 @@ def get_network_score(args):
 
 def init_network_argparse():
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument("--output", type=str, default=None, help="the path of output file")
+    parser.add_argument("--output", type=str, default=None, help="the path of output file. It will print the result in terminal if you don't specify its value.")
     # for network evaluation
-    parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network")
-    parser.add_argument("--dst_network_log", type=str, default=None, help="the path of network log")
+    parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network.")
+    parser.add_argument("--dst_network_log", type=str, required=True, default=None, help="the path of network log.")
 
     return parser
     

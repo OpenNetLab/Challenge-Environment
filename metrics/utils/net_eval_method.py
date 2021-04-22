@@ -3,17 +3,20 @@
 
 from utils.net_info import NetInfo
 import numpy as np
+from abc import ABC, abstractmethod
 
 
-class NetEvalMethod(object):
+class NetEvalMethod(ABC):
+    @abstractmethod
     def __init__(self):
         self.eval_name = "base"
 
+    @abstractmethod
     def eval(self, dst_audio_info : NetInfo):
         pass
 
 
-class NetEvalMethodNormal(object):
+class NetEvalMethodNormal(NetEvalMethod):
     def __init__(self):
         super(NetEvalMethodNormal, self).__init__()
         self.eval_name = "normal"
