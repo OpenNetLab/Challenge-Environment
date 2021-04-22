@@ -25,6 +25,7 @@ steps:
   displayName: 'Tag alphartc image'
 
 - task: Docker@2
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   inputs:
     containerRegistry: 'opennetlab Azure registry'
     repository: 'challenge-env'
