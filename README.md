@@ -5,3 +5,9 @@ This repository provides a container of the runtime environment for challenge ht
 Because the challenge requires contestants to submit a bandwidth estimator for RTC system. Considering the tradeoff between resource limitation, efficiency and security, we will only provides pre-installed third-parties library in our challenge runtime environment that can be found at the [Dockerfile](dockers/Dockerfile).
 
 If you want to add **more extensions** in the runtime environment, please create issue on this repository, we will discuss with OpenNetLab community about your proposal.
+
+## Get the pre-provided docker image
+
+```bash
+docker pull opennetlab.azurecr.io/challenge-env
+```
