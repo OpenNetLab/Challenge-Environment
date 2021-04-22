@@ -24,7 +24,7 @@ class VideoEvalMethodVmaf(VideoEvalMethod):
         self.support_type_abbreviation = ["y4m", "yuv"]
         if model_path:
             self.model_path = model_path
-        elif os.path.exist("/home/onl/vmaf/model/vmaf_v0.6.1.json"):
+        elif os.path.exists("/home/onl/vmaf/model/vmaf_v0.6.1.json"):
             self.model_path = "/home/onl/vmaf/model/vmaf_v0.6.1.json"
 
     def eval(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):  
