@@ -40,6 +40,3 @@ steps:
     command: 'push'
     tags: 'latest'
   displayName: "Push challenge-env image"
-
-- script: python3 -m pytest tests/test_eval_video.py
-  displayName: 'Test video evaluation'
