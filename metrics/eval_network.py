@@ -26,8 +26,13 @@ class NetworkEvaluation():
         return ret
 
 
-def get_network_score(eval_mathod, args):
-    network_eval_tool = NetworkEvaluation(eval_mathod, args)
+def get_network_score(args):
+    eval_method = None
+
+    if (args.network_eval_method == "normal"):
+        eval_method = NetEvalMethodNormal()
+    
+    network_eval_tool = NetworkEvaluation(eval_method, args)
     network_out = network_eval_tool.eval(args.dst_network_log)
 
     return network_out
@@ -46,13 +51,8 @@ def init_network_argparse():
 if __name__ == "__main__":
     parser = init_network_argparse()
     args = parser.parse_args()
-    out_dict = {}
-    eval_method = None
-
-    if (args.network_eval_method == "normal"):
-        eval_method = NetEvalMethodNormal()
-    
-    out_dict["network"] = get_network_score(eval_method, args)
+    out_dict = {}    
+    out_dict["network"] = get_network_score(args)
         
     if args.output:
         with open(args.output, 'w') as f:
