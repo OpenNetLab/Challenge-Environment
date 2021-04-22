@@ -6,14 +6,17 @@ import soundfile as sf
 from utils.audio_info import AudioInfo
 from urllib.parse import urlparse, urljoin
 from tempfile import NamedTemporaryFile
+from abc import ABC, abstractmethod
 
 
-class AudioEvalMethod(object):
+class AudioEvalMethod(ABC):
+    @abstractmethod
     def __init__(self):
         self.eval_name = "base"
         self.required_sample_rate = []
         self.required_channel = []
 
+    @abstractmethod
     def eval(self, dst_audio_info : AudioInfo):
         pass
 

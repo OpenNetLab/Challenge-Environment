@@ -32,7 +32,7 @@ def init_audio_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file")
     # for audio evaluation
-    parser.add_argument("--audio_eval_method", type=str, default="dnsmos", help="the method to evaluate audio, like DNSMOS")
+    parser.add_argument("--audio_eval_method", type=str, default="dnsmos", choices=["dnsmos"], help="the method to evaluate audio, like DNSMOS")
     parser.add_argument("--dst_audio", type=str, default=None, required=True, help="the path of destination audio")
     parser.add_argument("--audio_sample_rate", type=str, default='16000', help="the sample rate of audio")
     parser.add_argument("--audio_channel", type=str, default='1', help="the numbers of audio channels")
@@ -46,7 +46,7 @@ def init_audio_argparse():
 def get_audio_score(args):
     eval_method = None
 
-    if (args.audio_eval_method == "dnsmos"):
+    if args.audio_eval_method == "dnsmos":
         eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
         
     audio_eval_tool = AudioEvaluation(eval_method, args)
