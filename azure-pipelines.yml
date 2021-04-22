@@ -31,3 +31,6 @@ steps:
     command: 'push'
     tags: 'latest'
   displayName: "Push challenge-env image"
+
+- script: python3 -m pytest tests/test_eval_audio.py --dnsmos_uri $(dnsmosURI) --dnsmos_key $(dnsmosKey)
+  displayName: 'Test audio evaluation'
