@@ -21,6 +21,9 @@ steps:
 - script: make
   displayName: 'build challenge environment'
 
+- script: pytest tests/test_network.py
+  displayName: 'Test evaluation of network'
+
 - script: docker image tag challenge-env:latest $(dockerRegistry)/challenge-env:latest
   displayName: 'Tag alphartc image'
 

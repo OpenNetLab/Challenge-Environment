@@ -8,11 +8,12 @@ WORKDIR /home/${USER}
 # VMAF
 RUN apt-get update && apt-get install -y \
     ffmpeg make nasm ninja-build doxygen python3-pip git
-RUN pip3 install meson Cython
+RUN pip3 install meson Cython pytest requests
 
 RUN git clone https://github.com/Netflix/vmaf.git && cd vmaf && make install
 
 COPY metrics metrics
+COPY tests tests
 
 # basic
 RUN pip3 install numpy
