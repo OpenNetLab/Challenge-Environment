@@ -102,6 +102,7 @@ def init_video_argparse():
     parser.add_argument("--src_video", type=str, required=True, default=None, help="the path of source video")
     parser.add_argument("--dst_video", type=str, required=True, default=None, help="the path of destination video")
     parser.add_argument("--frame_align", type=str, default="ffmpeg", choices=["None", "ffmpeg"], help="how to do frame alignment")
+    parser.add_argument("--model_path", type=str, default=None, help="the path of vmaf model")
     # required by the video format of yuv raw video
     parser.add_argument("--video_size", type=str, default=None, help="the size of video, like 1920x1080. Required by the video format of yuv")
     parser.add_argument("--pixel_format", type=str, default=None, choices=["420", "422", "444"], help="pixel format (420/422/444)")
@@ -118,7 +119,7 @@ if __name__ == "__main__":
     align_method = None
 
     if (args.video_eval_method == "vmaf"):
-        eval_method = VideoEvalMethodVmaf()
+        eval_method = VideoEvalMethodVmaf(args.model_path)
     
     if (args.frame_align == "ffmpeg"):
         align_method = VideoAlignMethodFfmpeg()

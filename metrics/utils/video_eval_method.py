@@ -17,11 +17,12 @@ class VideoEvalMethod(object):
 
 
 class VideoEvalMethodVmaf(VideoEvalMethod):
-    def __init__(self):
+    def __init__(self, model_path=None):
         super(VideoEvalMethodVmaf, self).__init__()
         self.method_name = "ffmpeg"
         self.support_type = ["yuv4mpegpipe", "rawvideo"]
         self.support_type_abbreviation = ["y4m", "yuv"]
+        self.model_path = "/home/onl/vmaf/model/vmaf_v0.6.1.json" if not model_path else model_path
 
     def eval(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):  
         if src_video_info.format_name != dst_video_info.format_name:
@@ -29,7 +30,7 @@ class VideoEvalMethodVmaf(VideoEvalMethod):
         if src_video_info.format_name not in self.support_type:
             raise ValueError("Video type don't support")
 
-        cmd = ["vmaf", "--reference", src_video_info.video_path, "--distorted", dst_video_info.video_path]
+        cmd = ["vmaf", "--reference", src_video_info.video_path, "--distorted", dst_video_info.video_path, "-m", "path=%s" % (self.model_path)]
 
         if src_video_info.format_name == "rawvideo":
             cmd.extend(["--width", src_video_info.width, "--height", src_video_info.height, \
