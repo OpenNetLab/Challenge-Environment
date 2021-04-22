@@ -87,7 +87,16 @@ class VideoEvaluation(object):
         return ret
 
 
-def get_video_score(eval_method : VideoEvalMethod, align_method : VideoAlignMethod, args):
+def get_video_score(args):
+    eval_method = None
+    align_method = None
+
+    if (args.video_eval_method == "vmaf"):
+        eval_method = VideoEvalMethodVmaf(args.model_path)
+    
+    if (args.frame_align == "ffmpeg"):
+        align_method = VideoAlignMethodFfmpeg()
+
     video_eval_tool = VideoEvaluation(eval_method, align_method, args)
     video_out = video_eval_tool.eval(args.src_video, args.dst_video)
     
@@ -114,17 +123,8 @@ def init_video_argparse():
 if __name__ == "__main__":
     parser = init_video_argparse()
     args = parser.parse_args()
-    out_dict = {}
-    eval_method = None
-    align_method = None
-
-    if (args.video_eval_method == "vmaf"):
-        eval_method = VideoEvalMethodVmaf(args.model_path)
-    
-    if (args.frame_align == "ffmpeg"):
-        align_method = VideoAlignMethodFfmpeg()
-
-    out_dict["video"] = get_video_score(eval_method, align_method, args)
+    out_dict = {}  
+    out_dict["video"] = get_video_score(args)
         
     if args.output:
         with open(args.output, 'w') as f:
