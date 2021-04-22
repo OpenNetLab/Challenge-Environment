@@ -107,10 +107,10 @@ def init_video_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file")
     # for video evaluation
-    parser.add_argument("--video_eval_method", type=str, default="vmaf", choices=["None", "vmaf"], help="the method to evaluate video, like vmaf")
+    parser.add_argument("--video_eval_method", type=str, default="vmaf", choices=["vmaf"], help="the method to evaluate video, like vmaf")
     parser.add_argument("--src_video", type=str, required=True, default=None, help="the path of source video")
     parser.add_argument("--dst_video", type=str, required=True, default=None, help="the path of destination video")
-    parser.add_argument("--frame_align", type=str, default="ffmpeg", choices=["None", "ffmpeg"], help="how to do frame alignment")
+    parser.add_argument("--frame_align", type=str, default="ffmpeg", choices=["ffmpeg"], help="how to do frame alignment")
     parser.add_argument("--model_path", type=str, default=None, help="the path of vmaf model")
     # required by the video format of yuv raw video
     parser.add_argument("--video_size", type=str, default=None, help="the size of video, like 1920x1080. Required by the video format of yuv")

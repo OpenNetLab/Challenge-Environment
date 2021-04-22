@@ -4,14 +4,17 @@
 import subprocess, tempfile, re, os
 from utils.video_info import VideoInfo
 from tempfile import NamedTemporaryFile
+from abc import ABC, abstractmethod
 
 
-class VideoEvalMethod(object):
+class VideoEvalMethod(ABC):
+    @abstractmethod
     def __init__(self):
         self.method_name = "base"
         self.support_type = []
         self.support_type_abbreviation = []
 
+    @abstractmethod
     def eval(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):  
         pass
 

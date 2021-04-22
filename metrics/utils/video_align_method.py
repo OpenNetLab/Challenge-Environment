@@ -4,12 +4,15 @@
 import subprocess
 from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
+from abc import ABC, abstractmethod
 
 
-class VideoAlignMethod(object):
+class VideoAlignMethod(ABC):
+    @abstractmethod
     def __init__(self):
         self.align_method_name = "base"
 
+    @abstractmethod
     def frame_align(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):
         pass
 
