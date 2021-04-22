@@ -6,7 +6,7 @@ from tempfile import NamedTemporaryFile
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = cur_dir + "/../metrics/eval_video.py"
+file_path = cur_dir + "/../eval_video.py"
 
 
 def check_video_vmaf(src_video, dst_video):
