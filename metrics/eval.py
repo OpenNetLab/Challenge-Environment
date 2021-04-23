@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 import os, sys, argparse, json, shutil
 
 sys.path.append(os.getcwd())
@@ -11,9 +12,7 @@ from metrics.eval_network import NetworkEvaluation, init_network_argparse, get_n
 
 description = \
 '''
-Quickly Start:
-This file provide multi method to evaluate quality of video, audio and network. 
-You can find more informaiton form arguments -h.
+This script provide multi methods to evaluate quality of video, audio and network.
 '''
 
 def init_argparse():
@@ -21,8 +20,6 @@ def init_argparse():
     audio_parser = init_audio_argparse()
     network_parser = init_network_argparse()
     parser = argparse.ArgumentParser(description=description, parents=[video_parser, audio_parser, network_parser], conflict_handler='resolve')
-    parser.add_argument("--method", type=str, default="simple", choices=["simple"], help="the method to evaluation")
-    parser.add_argument("--output", type=str, default=None, help="the path of output file")
 
     args = parser.parse_args()
 
