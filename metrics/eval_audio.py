@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import argparse
-import json
-import os
+import os, subprocess, json, argparse
+from tempfile import NamedTemporaryFile
 from utils.audio_info import AudioInfo
 from utils.audio_eval_method import AudioEvalMethod, AudioEvalMethodDNSMOS
 
 
 description = \
 '''
-This file provide multi method to evaluate audio quality based on class of AudioEvalMethod. 
-For example, the class of AudioEvalMethodDNSMOS inherit from AudioEvalMethod can evaluate audio quality by using DNSMO API.
+This script provide multi methods to evaluate audio quality. 
+For example, the method of DNSMOS https://github.com/microsoft/DNS-Challenge.
 '''
 
 
@@ -20,8 +19,22 @@ class AudioEvaluation():
         self.eval_method = eval_method
         self.args = args
 
+    def change_audio_config(self, audio_info : AudioInfo):
+        if audio_info.sample_rate in self.eval_method.required_sample_rate and audio_info.channel in self.eval_method.required_channel:
+            return None
+        output = NamedTemporaryFile('w+t', suffix=".%s" % (audio_info.format_name))
+        cmd = ["ffmpeg", "-i", audio_info.audio_path, "-ar", self.eval_method.required_sample_rate[0], \
+                         "-ac", self.eval_method.required_channel[0], "-vn", "-y", output.name]
+        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+
+        return output
+
     def eval(self, dst_audio_path):
         dst_audio_info = AudioInfo(dst_audio_path)
+
+        # check audio type
+        fp_new_video = self.change_audio_config(dst_audio_info)
+        dst_audio_info = AudioInfo(fp_new_video.name) if fp_new_video else dst_audio_info
 
         score_dict = self.eval_method.eval(dst_audio_info)
 
@@ -48,6 +61,8 @@ def get_audio_score(args):
 
     if args.audio_eval_method == "dnsmos":
         eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
+    else:
+        raise ValueError("Not supoort such method to evaluate audio")
         
     audio_eval_tool = AudioEvaluation(eval_method, args)
     audio_out = audio_eval_tool.eval(args.dst_audio)

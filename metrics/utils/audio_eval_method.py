@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import requests, subprocess, glob, json
+import requests, glob, json
 import soundfile as sf
 from utils.audio_info import AudioInfo
 from urllib.parse import urlparse, urljoin
-from tempfile import NamedTemporaryFile
 from abc import ABC, abstractmethod
 
 
@@ -24,30 +23,20 @@ class AudioEvalMethod(ABC):
 class AudioEvalMethodDNSMOS(AudioEvalMethod):
     def __init__(self, dnsmos_uri, dnsmos_key):
         super(AudioEvalMethodDNSMOS, self).__init__()
+        if not dnsmos_uri or not dnsmos_key:
+            raise ValueError("Please specify the arguments dnsmos_uri and dnsmos_key.")
+        
         self.eval_name = "dnsmos"
         self.dnsmos_uri = dnsmos_uri
         self.dnsmos_key = dnsmos_key
         self.required_sample_rate = ["16000"]
         self.required_channel = ["1"]
 
-    def change_audio_config(self, audio_info : AudioInfo):
-        if audio_info.sample_rate in self.required_sample_rate and audio_info.channel in self.required_channel:
-            return None
-        output = NamedTemporaryFile('w+t', suffix=".%s" % (audio_info.format_name))
-        cmd = ["ffmpeg", "-i", audio_info.audio_path, "-ar", self.required_sample_rate[0], "-ac", self.required_channel[0], \
-                "-vn", "-y", output.name]
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
-
-        return output
-
     def eval(self, dst_audio_info : AudioInfo):
         # Set the content type
         headers = {'Content-Type': 'application/json'}
         # If authentication is enabled, set the authorization header
         headers['Authorization'] = f'Basic {self.dnsmos_key}'
-        
-        fp_new_video = self.change_audio_config(dst_audio_info)
-        dst_audio_info = AudioInfo(fp_new_video.name) if fp_new_video else dst_audio_info
         
         audio, fs = sf.read(dst_audio_info.audio_path)
         if fs != 16000:
