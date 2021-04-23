@@ -21,7 +21,7 @@ steps:
 - script: make
   displayName: 'build challenge environment'
 
-- script: docker run --rm challenge-env python3 -m pytest metrics/tests
+- script: docker run --rm challenge-env python3 -m pytest metrics/tests --dnsmos_uri $(dnsmosURI) --dnsmos_key $(dnsmosKey)
   displayName: 'Run test'
 
 - script: docker image tag challenge-env:latest $(dockerRegistry)/challenge-env:latest
