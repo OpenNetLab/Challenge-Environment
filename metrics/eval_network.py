@@ -9,8 +9,7 @@ from utils.net_eval_method import NetEvalMethod, NetEvalMethodNormal
 
 description = \
 '''
-This file provide multi method to evaluate network quality based on class of NetEvalMethod. 
-For example, the class of NetEvalMethodNormal inherit from NetEvalMethod can evaluate video quality by using loss rate and throughput.
+This script provide multi methods to evaluate network quality.
 '''
 
 
@@ -31,6 +30,8 @@ def get_network_score(args):
 
     if args.network_eval_method == "normal":
         eval_method = NetEvalMethodNormal()
+    else:
+        raise ValueError("Not supoort such method to evaluate network")
     
     network_eval_tool = NetworkEvaluation(eval_method, args)
     network_out = network_eval_tool.eval(args.dst_network_log)
@@ -44,6 +45,7 @@ def init_network_argparse():
     # for network evaluation
     parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network.")
     parser.add_argument("--dst_network_log", type=str, required=True, default=None, help="the path of network log.")
+    parser.add_argument("--delay_effect_interval", type=str, default="200", help="the effect interval of delay list. The delay out of this interval will be thought as bad performance.")
 
     return parser
     

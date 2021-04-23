@@ -24,5 +24,5 @@ def check_network_score(dst_network_log):
 
 
 def test_network_score():
-    dst_network_log = cur_dir + "/data/alphartc.txt"
+    dst_network_log = cur_dir + "/data/alphartc.log"
     check_network_score(dst_network_log)

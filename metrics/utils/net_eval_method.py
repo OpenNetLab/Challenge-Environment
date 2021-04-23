@@ -17,48 +17,44 @@ class NetEvalMethod(ABC):
 
 
 class NetEvalMethodNormal(NetEvalMethod):
-    def __init__(self):
+    def __init__(self, delay_effect_interval=200):
         super(NetEvalMethodNormal, self).__init__()
         self.eval_name = "normal"
+        self.delay_effect_interval = delay_effect_interval
 
     def eval(self, dst_audio_info : NetInfo):
         net_data = dst_audio_info.net_data
         ssrc_info = {}
 
-        jitter_list = []
+        delay_list = []
         for item in net_data:
             ssrc = item["packetInfo"]["header"]["ssrc"]
             tmp_delay = item["packetInfo"]["arrivalTimeMs"] - item["packetInfo"]["header"]["sendTimestamp"]
             if (ssrc not in ssrc_info):
                 ssrc_info[ssrc] = {
-                    "pkt_size_list" : []
+                    "time_delta" : -tmp_delay,
+                    "delay_list" : []
                 }
-                ssrc_info[ssrc]["base_arrivalTimeMs"] = item["packetInfo"]["arrivalTimeMs"] 
-                ssrc_info[ssrc]["base_sendTimestamp"] = item["packetInfo"]["header"]["sendTimestamp"]
-                ssrc_info[ssrc]["base_delay"] = tmp_delay
-            else:
-                jitter_list.append(tmp_delay - ssrc_info[ssrc]["base_delay"])
-
-            ssrc_info[ssrc]["last_arrivalTimeMs"] = item["packetInfo"]["arrivalTimeMs"] 
-            ssrc_info[ssrc]["last_sendTimestamp"] = item["packetInfo"]["header"]["sendTimestamp"]
-            ssrc_info[ssrc]["pkt_size_list"].append(item["packetInfo"]["header"]["headerLength"] + item["packetInfo"]["payloadSize"])
-        
-        # higher jitter variance, lower score
-        jitter_var = np.std(jitter_list)
+                
+            ssrc_info[ssrc]["delay_list"].append(ssrc_info[ssrc]["time_delta"] + tmp_delay)
+        # scale delay list
+        for ssrc in ssrc_info:
+            min_delay = min(ssrc_info[ssrc]["delay_list"])
+            # make offset if the first packet don't have the min delay
+            base_delay = 0 if min_delay >= 0 else -min_delay
+            mean_delay = np.mean(ssrc_info[ssrc]["delay_list"]) + base_delay
+            max_delay = mean_delay + self.delay_effect_interval
+            ssrc_info[ssrc]["scale_delay_list"] = [min(delay+base_delay, max_delay) / max_delay for delay in ssrc_info[ssrc]["delay_list"]]
+        # delay score
+        avg_delay_score = np.mean([np.mean(ssrc_info[ssrc]["scale_delay_list"]) for ssrc in ssrc_info])
 
         # higher loss rate, lower score
         loss_list = [item["packetInfo"]["lossRates"] for item in net_data]
         avg_loss_rate = sum(loss_list) / len(net_data)
 
-        avg_throughput_bps_list = [sum(ssrc_info[k]["pkt_size_list"]) * 8 / 
-                                    (ssrc_info[k]["last_arrivalTimeMs"] - ssrc_info[k]["base_arrivalTimeMs"]) * 1e3 for k in ssrc_info]
-        # stardard throughput by using the max value
-        throughput_score_rate = np.mean(list(map(lambda x : x / max(avg_throughput_bps_list), avg_throughput_bps_list)))
-
-        # calculate result score and the score composition can be evenly divided into three parts
-        avg_score = 100 / 3
-        network_score = avg_score - min(avg_score, jitter_var) + \
-                            avg_score * (1 - avg_loss_rate) + \
-                            avg_score * throughput_score_rate
+        # calculate result score and the score composition can be evenly divided into two parts
+        avg_score = 50
+        network_score = avg_score * (1 - avg_delay_score) + \
+                            avg_score * (1 - avg_loss_rate)
 
         return network_score
