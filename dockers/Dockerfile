@@ -7,7 +7,7 @@ WORKDIR /home/${USER}
 
 # VMAF
 RUN apt-get update && apt-get install -y \
-    ffmpeg make nasm ninja-build doxygen python3-pip git vim-common
+    ffmpeg make nasm ninja-build doxygen python3-pip git xxd
 
 RUN pip3 install meson Cython pytest numpy requests soundfile
 
