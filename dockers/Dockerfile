@@ -7,15 +7,14 @@ WORKDIR /home/${USER}
 
 # VMAF
 RUN apt-get update && apt-get install -y \
-    ffmpeg make nasm ninja-build doxygen python3-pip git
-RUN pip3 install meson Cython pytest
+    ffmpeg make nasm ninja-build doxygen python3-pip git vim-common
 
-RUN git clone https://github.com/Netflix/vmaf.git && cd vmaf && make install
+RUN pip3 install meson Cython pytest numpy
+
+RUN git clone https://github.com/Netflix/vmaf.git && cd vmaf && make all && make install
 
 COPY metrics metrics
 
-# basic
-RUN pip3 install numpy
 # OpenAI
 RUN pip3 install gym
 # PyTorch

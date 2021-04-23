@@ -25,10 +25,7 @@ class VideoEvalMethodVmaf(VideoEvalMethod):
         self.method_name = "ffmpeg"
         self.support_type = ["yuv4mpegpipe", "rawvideo"]
         self.support_type_abbreviation = ["y4m", "yuv"]
-        if model_path:
-            self.model_path = model_path
-        elif os.path.exists("/home/onl/vmaf/model/vmaf_v0.6.1.json"):
-            self.model_path = "/home/onl/vmaf/model/vmaf_v0.6.1.json"
+        self.model_path = model_path
 
     def eval(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):  
         if src_video_info.format_name != dst_video_info.format_name:

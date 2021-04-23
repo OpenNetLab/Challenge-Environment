@@ -10,8 +10,8 @@ from utils.video_align_method import VideoAlignMethodFfmpeg, VideoAlignMethod
 
 description = \
 '''
-This file provide multi method to evaluate video quality based on class of VideoEvalMethod. 
-For example, the class of VideoEvalMethodVmaf inherit from VideoEvalMethod can evaluate video quality by using vmaf tools.
+This script provide multi methods to evaluate network quality.
+For example, the method of Vmaf https://github.com/Netflix/vmaf.
 '''
 
 
@@ -70,8 +70,7 @@ class VideoEvaluation(object):
             fp_new_dst_video = self.change_video_type(dst_video_info, "y4m")
             dst_video_info = VideoInfo(fp_new_dst_video.name, video_size=video_size)
 
-        # use args or align_method?
-        if self.args.frame_align == "ffmpeg":
+        if self.args.frame_align_method == "ffmpeg":
             if not src_video_info.fps and not dst_video_info.fps:
                 raise ValueError("Can't get fps from video")
             if src_video_info.fps:
@@ -91,11 +90,15 @@ def get_video_score(args):
     eval_method = None
     align_method = None
 
-    if (args.video_eval_method == "vmaf"):
+    if args.video_eval_method == "vmaf":
         eval_method = VideoEvalMethodVmaf(args.model_path)
+    else:
+        raise ValueError("Not supoort such method to evaluate video")
     
-    if (args.frame_align == "ffmpeg"):
+    if args.frame_align_method == "ffmpeg":
         align_method = VideoAlignMethodFfmpeg()
+    elif args.frame_align_method == "None":
+        raise ValueError("Not supoort such method to align video")
 
     video_eval_tool = VideoEvaluation(eval_method, align_method, args)
     video_out = video_eval_tool.eval(args.src_video, args.dst_video)
@@ -110,7 +113,7 @@ def init_video_argparse():
     parser.add_argument("--video_eval_method", type=str, default="vmaf", choices=["vmaf"], help="the method to evaluate video, like vmaf")
     parser.add_argument("--src_video", type=str, required=True, default=None, help="the path of source video")
     parser.add_argument("--dst_video", type=str, required=True, default=None, help="the path of destination video")
-    parser.add_argument("--frame_align", type=str, default="ffmpeg", choices=["ffmpeg"], help="how to do frame alignment")
+    parser.add_argument("--frame_align_method", type=str, default="ffmpeg", choices=["None", "ffmpeg"], help="how to do frame alignment. None means not to do frame align")
     parser.add_argument("--model_path", type=str, default=None, help="the path of vmaf model")
     # required by the video format of yuv raw video
     parser.add_argument("--video_size", type=str, default=None, help="the size of video, like 1920x1080. Required by the video format of yuv")
