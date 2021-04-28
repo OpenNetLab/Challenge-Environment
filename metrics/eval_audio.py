@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, subprocess, json, argparse
+import subprocess, json, argparse
 from tempfile import NamedTemporaryFile
 from utils.audio_info import AudioInfo
 from utils.audio_eval_method import AudioEvalMethod, AudioEvalMethodDNSMOS
