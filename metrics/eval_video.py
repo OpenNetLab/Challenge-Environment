@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, argparse, json, subprocess
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
 from utils.video_eval_method import VideoEvalMethodVmaf, VideoEvalMethod

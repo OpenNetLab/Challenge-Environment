@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, argparse, json, shutil
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
 from utils.net_info import NetInfo
 from utils.net_eval_method import NetEvalMethod, NetEvalMethodNormal

@@ -3,7 +3,8 @@
 
 import os, sys, argparse, json, shutil
 
-sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from metrics.eval_video import VideoEvaluation, init_video_argparse, get_video_score
 from metrics.eval_audio import AudioEvaluation, init_audio_argparse, get_audio_score

@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os, subprocess, json, argparse
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from tempfile import NamedTemporaryFile
 from utils.audio_info import AudioInfo
 from utils.audio_eval_method import AudioEvalMethod, AudioEvalMethodDNSMOS
