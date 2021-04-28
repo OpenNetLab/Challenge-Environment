@@ -16,19 +16,27 @@ dst_network_log = cur_dir + "/data/alphartc.log"
 
 def run_and_check_result(cmd):
     cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+    
     data = json.loads(cmd_result.stdout)
     assert "video" in data
+    assert type(data["video"]) == float
     assert "audio" in data
+    assert type(data["audio"]) == float
     assert "network" in data
+    assert type(data["network"]) == float
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
         cmd.extend(["--output", output.name])
         cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+
         data = json.loads(output.read())
         assert "video" in data
+        assert type(data["video"]) == float
         assert "audio" in data
+        assert type(data["audio"]) == float
         assert "network" in data
+        assert type(data["network"]) == float
 
 
 def check_video_score(src_video, dst_video, audio_path, dnsmos_uri, dnsmos_key, dst_network_log):
