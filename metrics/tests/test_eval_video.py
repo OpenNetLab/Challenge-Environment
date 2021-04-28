@@ -12,28 +12,38 @@ file_path = cur_dir + "/../eval_video.py"
 def check_video_vmaf(src_video, dst_video):
     cmd = ["python3", file_path, "--video_eval_method", "vmaf", "--src_video", src_video, "--dst_video", dst_video]
     cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
-    assert "video" in json.loads(cmd_result.stdout)
     
+    data = json.loads(cmd_result.stdout)
+    assert "video" in data
+    assert type(data["video"]) == float
+
     # check output file
     with NamedTemporaryFile('w+t') as output:
         cmd.extend(["--output", output.name])
         cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+
         data = json.loads(output.read())
         assert "video" in data
+        assert type(data["video"]) == float 
 
 
 def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdepth):
     cmd = ["python3", file_path, "--video_eval_method", "vmaf", "--src_video", src_video, "--dst_video", dst_video, \
                                  "--video_size", video_size, "--pixel_format", pixel_format, "--bitdepth", bitdepth]
     cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
-    assert "video" in json.loads(cmd_result.stdout)
     
+    data = json.loads(cmd_result.stdout)
+    assert "video" in data
+    assert type(data["video"]) == float
+
     # check output file
     with NamedTemporaryFile('w+t') as output:
         cmd.extend(["--output", output.name])
         cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+
         data = json.loads(output.read())
         assert "video" in data
+        assert type(data["video"]) == float 
 
 
 def test_y4m_y4m_compare():

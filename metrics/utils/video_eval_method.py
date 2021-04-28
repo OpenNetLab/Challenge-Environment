@@ -44,6 +44,9 @@ class VideoEvalMethodVmaf(VideoEvalMethod):
         with NamedTemporaryFile('w+t', suffix=".xml") as f:
             cmd.extend(["--output", f.name])
             cmd_result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
-            vmaf_score = re.search(r'metric name="vmaf".*?mean="([\d]+\.[\d]+)"', f.read()).group(1)
+            re_result = re.search(r'metric name="vmaf".*?mean="([\d]+\.[\d]+)"', f.read())
+            if not re_result:
+                raise ValueError("Can not get vmaf score from terminal output")
+            vmaf_score = float(re_result.group(1))
 
         return vmaf_score

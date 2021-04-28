@@ -13,14 +13,18 @@ def check_audio_dnsmos(audio_path, dnsmos_uri, dnsmos_key):
     cmd = ["python3", file_path, "--audio_eval_method", "dnsmos", "--dnsmos_uri", dnsmos_uri, "--dnsmos_key", dnsmos_key, "--dst_audio", audio_path]
     cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
 
-    assert "audio" in json.loads(cmd_result.stdout)
-    
+    data = json.loads(cmd_result.stdout)
+    assert "audio" in data
+    assert type(data["audio"]) == float
+
     # check output file
     with NamedTemporaryFile('w+t') as output:
         cmd.extend(["--output", output.name])
         cmd_result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
+
         data = json.loads(output.read())
         assert "audio" in data
+        assert type(data["audio"]) == float
 
 
 def test_dnsmos_audio(dnsmos_uri, dnsmos_key):
