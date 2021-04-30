@@ -16,6 +16,7 @@ def check_video_vmaf(src_video, dst_video):
     data = json.loads(cmd_result.stdout)
     assert "video" in data
     assert type(data["video"]) == float
+    assert data["video"] >= 0 and data["video"] <= 100
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
@@ -25,6 +26,7 @@ def check_video_vmaf(src_video, dst_video):
         data = json.loads(output.read())
         assert "video" in data
         assert type(data["video"]) == float 
+        assert data["video"] >= 0 and data["video"] <= 100
 
 
 def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdepth):
@@ -35,6 +37,7 @@ def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdept
     data = json.loads(cmd_result.stdout)
     assert "video" in data
     assert type(data["video"]) == float
+    assert data["video"] >= 0 and data["video"] <= 100
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
@@ -44,6 +47,7 @@ def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdept
         data = json.loads(output.read())
         assert "video" in data
         assert type(data["video"]) == float 
+        assert data["video"] >= 0 and data["video"] <= 100
 
 
 def test_y4m_y4m_compare():

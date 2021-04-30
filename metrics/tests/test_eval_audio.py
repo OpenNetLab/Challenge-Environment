@@ -16,6 +16,7 @@ def check_audio_dnsmos(audio_path, dnsmos_uri, dnsmos_key):
     data = json.loads(cmd_result.stdout)
     assert "audio" in data
     assert type(data["audio"]) == float
+    assert data["audio"] >= 0 and data["audio"] <= 100
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
@@ -25,6 +26,7 @@ def check_audio_dnsmos(audio_path, dnsmos_uri, dnsmos_key):
         data = json.loads(output.read())
         assert "audio" in data
         assert type(data["audio"]) == float
+        assert data["audio"] >= 0 and data["audio"] <= 100
 
 
 def test_dnsmos_audio(dnsmos_uri, dnsmos_key):
