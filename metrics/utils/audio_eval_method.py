@@ -48,5 +48,6 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         resp = requests.post(urljoin("https://" + u.netloc, 'score'), data=input_data, headers=headers)
         score_dict = resp.json()
         
-        return score_dict["mos"]
+        # scale [1, 5] -> [0, 100]
+        return (score_dict["mos"] - 1) / 4 * 100
     

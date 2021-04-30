@@ -16,6 +16,7 @@ def check_network_score(dst_network_log):
     data = json.loads(cmd_result.stdout)
     assert "network" in data
     assert type(data["network"]) == float
+    assert data["network"] >= 0 and data["network"] <= 100
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
@@ -25,6 +26,7 @@ def check_network_score(dst_network_log):
         data = json.loads(output.read())
         assert "network" in data
         assert type(data["network"]) == float
+        assert data["network"] >= 0 and data["network"] <= 100
 
 
 def test_network_score():
