@@ -5,13 +5,16 @@ ARG USER=onl
 
 WORKDIR /home/${USER}
 
-# VMAF
+# Install dependency
 RUN apt-get update && apt-get install -y \
-    ffmpeg make nasm ninja-build doxygen python3-pip git xxd
+    ffmpeg python3-pip wget unzip
 
-RUN pip3 install meson Cython pytest numpy requests soundfile
+RUN pip3 install pytest numpy requests soundfile
 
-RUN git clone https://github.com/Netflix/vmaf.git && cd vmaf && make all && make install
+# Download release version of vmaf
+RUN wget https://github.com/Netflix/vmaf/releases/download/v2.1.0/ubuntu-18.04-vmaf.zip
+# Install vmaf
+RUN unzip -o ubuntu-18.04-vmaf.zip && chmod 774 vmaf && mv vmaf /usr/bin && rm ubuntu-18.04-vmaf.zip
 
 COPY metrics metrics
 
