@@ -29,7 +29,7 @@ def get_network_score(args):
     eval_method = None
 
     if args.network_eval_method == "normal":
-        eval_method = NetEvalMethodNormal()
+        eval_method = NetEvalMethodNormal(args.delay_effect_interval, args.max_delay)
     else:
         raise ValueError("Not supoort such method to evaluate network")
     
@@ -45,7 +45,8 @@ def init_network_argparse():
     # for network evaluation
     parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network.")
     parser.add_argument("--dst_network_log", type=str, required=True, default=None, help="the path of network log.")
-    parser.add_argument("--delay_effect_interval", type=str, default="200", help="the effect interval of delay list. The delay out of this interval will be thought as bad performance.")
+    parser.add_argument("--delay_effect_interval", type=float, default=200, help="the effect interval of delay list. The delay out of this interval will be thought as bad performance.")
+    parser.add_argument("--max_delay", type=float, default=400, help="the max packet delay.")
 
     return parser
     
