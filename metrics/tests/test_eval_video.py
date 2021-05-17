@@ -40,7 +40,7 @@ def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdept
     run_and_check_result(cmd)
 
 
-def check_ocr_video_vmaf(src_video, dst_video, align_method):
+def check_align_video_vmaf(src_video, dst_video, align_method):
     cmd = ["python3", file_path, "--video_eval_method", "vmaf", "--src_video", src_video, "--dst_video", dst_video]
     if align_method:
         cmd.extend(["--frame_align_method", align_method])
@@ -63,4 +63,4 @@ def test_yuv_yuv_compare(yuv_video):
 def test_y4m_align_compare(y4m_video, align_method):
     src_video = y4m_video
     dst_video = y4m_video
-    check_ocr_video_vmaf(src_video, dst_video, align_method)
+    check_align_video_vmaf(src_video, dst_video, align_method)
