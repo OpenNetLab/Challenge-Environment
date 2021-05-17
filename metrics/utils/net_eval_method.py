@@ -17,10 +17,9 @@ class NetEvalMethod(ABC):
 
 
 class NetEvalMethodNormal(NetEvalMethod):
-    def __init__(self, delay_effect_interval=200, max_delay=400):
+    def __init__(self, max_delay=400):
         super(NetEvalMethodNormal, self).__init__()
         self.eval_name = "normal"
-        self.delay_effect_interval = delay_effect_interval
         self.max_delay = max_delay
 
     def eval(self, dst_audio_info : NetInfo):
