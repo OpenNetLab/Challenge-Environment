@@ -5,7 +5,7 @@ import subprocess, tempfile, re, os
 
 
 class VideoInfo(object):
-    def __init__(self, video_path, video_size=None, bitdepth="8", tmp_file=None):
+    def __init__(self, video_path, video_size=None, bitdepth="8"):
         self.video_path = video_path
         self.video_size = video_size
         self.width = None
@@ -18,7 +18,6 @@ class VideoInfo(object):
         self.bit_rate = None
         self.pixel_format = None
         self.bitdepth = bitdepth
-        self.tmp_file = tmp_file
 
         self.parse_video_by_ffprobe(video_size)
 
