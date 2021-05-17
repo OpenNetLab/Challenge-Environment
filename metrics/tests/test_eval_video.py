@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os, json, pytest, subprocess
+import os, json, subprocess
 from tempfile import NamedTemporaryFile
 
 
@@ -40,31 +40,27 @@ def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdept
     run_and_check_result(cmd)
 
 
-def check_ocr_video_vmaf(src_video, dst_video):
-    cmd = ["python3", file_path, "--video_eval_method", "vmaf", "--src_video", src_video, "--dst_video", dst_video, "--frame_align_method", "ocr"]
+def check_ocr_video_vmaf(src_video, dst_video, align_method):
+    cmd = ["python3", file_path, "--video_eval_method", "vmaf", "--src_video", src_video, "--dst_video", dst_video]
+    if align_method:
+        cmd.extend(["--frame_align_method", align_method])
     
     run_and_check_result(cmd)
 
 
-def test_y4m_y4m_compare():
-    src_video = cur_dir + "/data/test.y4m"
-    dst_video = cur_dir + "/data/test.y4m"
-    check_video_vmaf(src_video, dst_video)
-
-
-def test_y4m_yuv_compare():
-    src_video = cur_dir + "/data/test.yuv"
-    dst_video = cur_dir + "/data/test.y4m"
+def test_y4m_yuv_compare(y4m_video, yuv_video):
+    src_video = y4m_video
+    dst_video = yuv_video
     check_video_vmaf(dst_video, src_video)
     check_video_vmaf(src_video, dst_video)
 
-def test_yuv_yuv_compare():
-    src_video = cur_dir + "/data/test.yuv"
-    dst_video = cur_dir + "/data/test.yuv"
+def test_yuv_yuv_compare(yuv_video):
+    src_video = yuv_video
+    dst_video = yuv_video
     check_yuv_video_vmaf(dst_video, src_video, video_size="320x240", pixel_format="420", bitdepth="8")
 
 
-def test_mp4_ocr_compare():
-    src_video = cur_dir + "/data/label.mp4"
-    dst_video = cur_dir + "/data/label.mp4"
-    check_ocr_video_vmaf(dst_video, src_video)
+def test_y4m_align_compare(y4m_video, align_method):
+    src_video = y4m_video
+    dst_video = y4m_video
+    check_ocr_video_vmaf(src_video, dst_video, align_method)
