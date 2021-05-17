@@ -49,18 +49,20 @@ def check_align_video_vmaf(src_video, dst_video, align_method):
 
 
 def test_y4m_yuv_compare(y4m_video, yuv_video):
-    src_video = y4m_video
-    dst_video = yuv_video
-    check_video_vmaf(dst_video, src_video)
+    src_video = y4m_video["path"]
+    dst_video = yuv_video["path"]
     check_video_vmaf(src_video, dst_video)
+    check_video_vmaf(dst_video, src_video)
+
 
 def test_yuv_yuv_compare(yuv_video):
-    src_video = yuv_video
-    dst_video = yuv_video
-    check_yuv_video_vmaf(dst_video, src_video, video_size="320x240", pixel_format="420", bitdepth="8")
+    src_video = yuv_video["path"]
+    dst_video = yuv_video["path"]
+    video_size, pixel_format, bitdepth = yuv_video["video_size"], yuv_video["pixel_format"], yuv_video["bitdepth"]
+    check_yuv_video_vmaf(src_video, dst_video, video_size=video_size, pixel_format=pixel_format, bitdepth=bitdepth)
 
 
 def test_y4m_align_compare(y4m_video, align_method):
-    src_video = y4m_video
-    dst_video = y4m_video
+    src_video = y4m_video["path"]
+    dst_video = y4m_video["path"]
     check_align_video_vmaf(src_video, dst_video, align_method)
