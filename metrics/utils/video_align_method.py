@@ -33,14 +33,14 @@ class VideoAlignMethodFfmpeg(VideoAlignMethod):
 
     def frame_align(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):
 
-        fp_new_video = None
+        fo_new_video = None
         # Frame alignment
         if not src_video_info.fps or \
                 abs(src_video_info.get_frame_count() - dst_video_info.get_frame_count()) >= 0.000001:
             new_fps = dst_video_info.get_frame_count() / float(src_video_info.duration_sec)
-            fp_new_video = self.change_video_fps_by_ffmepg(src_video_info, new_fps)
+            fo_new_video = self.change_video_fps_by_ffmepg(src_video_info, new_fps)
 
-        return fp_new_video
+        return fo_new_video
 
 
 class VideoAlignMethodOcr(VideoAlignMethod):
@@ -52,10 +52,10 @@ class VideoAlignMethodOcr(VideoAlignMethod):
 
     def frame_align(self, src_video_info : VideoInfo, dst_video_info : VideoInfo):
 
-        fp_new_src_video = NamedTemporaryFile('w+t', suffix=".%s" % (src_video_info.format_abbreviation))
+        fo_new_src_video = NamedTemporaryFile('w+t', suffix=".%s" % (src_video_info.format_abbreviation))
         cmd = [self.file_path, "-p=%s" % (os.path.splitext(os.path.basename(src_video_info.video_path))[0]), "--src=%s" % (src_video_info.video_path), \
-                "--src_out=%s" % (fp_new_src_video.name), "--fps=%s" % (src_video_info.fps), "-d=%s" % (src_video_info.duration_sec), \
+                "--src_out=%s" % (fo_new_src_video.name), "--fps=%s" % (src_video_info.fps), "-d=%s" % (src_video_info.duration_sec), \
                 "-w=%s" % (src_video_info.width), "-h=%s" % (src_video_info.height), "--suffix=%s" % (src_video_info.format_abbreviation)]
         out = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding="utf8")
 
-        return fp_new_src_video
+        return fo_new_src_video

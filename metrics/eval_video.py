@@ -57,34 +57,34 @@ class VideoEvaluation(object):
 
         # check video type
         if src_video_info.format_name not in self.eval_method.support_type:
-            fd_new_src_video = self.change_video_type(src_video_info, self.eval_method.support_type_abbreviation[0])
-            src_video_info = VideoInfo(fd_new_src_video.name)
+            fo_new_src_video = self.change_video_type(src_video_info, self.eval_method.support_type_abbreviation[0])
+            src_video_info = VideoInfo(fo_new_src_video.name)
         if dst_video_info.format_name not in self.eval_method.support_type:
-            fd_new_dst_video = self.change_video_type(dst_video_info, self.eval_method.support_type_abbreviation[0])
-            dst_video_info = VideoInfo(fd_new_dst_video.name)
+            fo_new_dst_video = self.change_video_type(dst_video_info, self.eval_method.support_type_abbreviation[0])
+            dst_video_info = VideoInfo(fo_new_dst_video.name)
 
         # keep same video type
         if src_video_info.format_abbreviation != "y4m":
-            fd_new_src_video = self.change_video_type(src_video_info, "y4m")
-            src_video_info = VideoInfo(fd_new_src_video.name, video_size=video_size)
+            fo_new_src_video = self.change_video_type(src_video_info, "y4m")
+            src_video_info = VideoInfo(fo_new_src_video.name, video_size=video_size)
         if dst_video_info.format_abbreviation != "y4m":
-            fd_new_dst_video = self.change_video_type(dst_video_info, "y4m")
-            dst_video_info = VideoInfo(fd_new_dst_video.name, video_size=video_size)
+            fo_new_dst_video = self.change_video_type(dst_video_info, "y4m")
+            dst_video_info = VideoInfo(fo_new_dst_video.name, video_size=video_size)
 
         if self.args.frame_align_method != "None":
             if not src_video_info.fps and not dst_video_info.fps:
                 raise ValueError("Can't get fps from video")
             # get align video from src video
-            tmp_fd = self.align_method.frame_align(src_video_info, dst_video_info)
+            tmp_fo = self.align_method.frame_align(src_video_info, dst_video_info)
             # update video if need to do align
-            if tmp_fd:
-                fd_new_src_video = tmp_fd
-                src_video_info = VideoInfo(fd_new_src_video.name)
+            if tmp_fo:
+                fo_new_src_video = tmp_fo
+                src_video_info = VideoInfo(fo_new_src_video.name)
 
-            tmp_fd = self.align_method.frame_align(dst_video_info, src_video_info)
-            if tmp_fd:
-                fd_new_dst_video = tmp_fd
-                dst_video_info = VideoInfo(fd_new_dst_video.name)
+            tmp_fo = self.align_method.frame_align(dst_video_info, src_video_info)
+            if tmp_fo:
+                fo_new_dst_video = tmp_fo
+                dst_video_info = VideoInfo(fo_new_dst_video.name)
 
         # Calculate video quality
         ret = self.eval_method.eval(src_video_info, dst_video_info)
