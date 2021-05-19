@@ -5,7 +5,7 @@ import argparse, json, subprocess
 from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
 from utils.video_eval_method import VideoEvalMethodVmaf, VideoEvalMethod
-from utils.video_align_method import VideoAlignMethodFfmpeg, VideoAlignMethod
+from utils.video_align_method import VideoAlignMethodFfmpeg, VideoAlignMethod, VideoAlignMethodOcr
 
 
 description = \
@@ -57,32 +57,38 @@ class VideoEvaluation(object):
 
         # check video type
         if src_video_info.format_name not in self.eval_method.support_type:
-            fp_new_src_video = self.change_video_type(src_video_info, self.eval_method.support_type_abbreviation[0])
-            src_video_info = VideoInfo(fp_new_src_video.name)
+            fo_new_src_video = self.change_video_type(src_video_info, self.eval_method.support_type_abbreviation[0])
+            src_video_info = VideoInfo(fo_new_src_video.name)
         if dst_video_info.format_name not in self.eval_method.support_type:
-            fp_new_dst_video = self.change_video_type(dst_video_info, self.eval_method.support_type_abbreviation[0])
-            dst_video_info = VideoInfo(fp_new_dst_video.name)
+            fo_new_dst_video = self.change_video_type(dst_video_info, self.eval_method.support_type_abbreviation[0])
+            dst_video_info = VideoInfo(fo_new_dst_video.name)
+
         # keep same video type
         if src_video_info.format_abbreviation != "y4m":
-            fp_new_src_video = self.change_video_type(src_video_info, "y4m")
-            src_video_info = VideoInfo(fp_new_src_video.name, video_size=video_size)
+            fo_new_src_video = self.change_video_type(src_video_info, "y4m")
+            src_video_info = VideoInfo(fo_new_src_video.name, video_size=video_size)
         if dst_video_info.format_abbreviation != "y4m":
-            fp_new_dst_video = self.change_video_type(dst_video_info, "y4m")
-            dst_video_info = VideoInfo(fp_new_dst_video.name, video_size=video_size)
+            fo_new_dst_video = self.change_video_type(dst_video_info, "y4m")
+            dst_video_info = VideoInfo(fo_new_dst_video.name, video_size=video_size)
 
-        if self.args.frame_align_method == "ffmpeg":
+        if self.args.frame_align_method != "None":
             if not src_video_info.fps and not dst_video_info.fps:
                 raise ValueError("Can't get fps from video")
-            if src_video_info.fps:
-                fp_new_video = self.align_method.frame_align(dst_video_info, src_video_info)
-                dst_video_info = VideoInfo(fp_new_video.name) if fp_new_video else dst_video_info
-            else:
-                fp_new_video = self.align_method.frame_align(src_video_info, dst_video_info)
-                src_video_info = VideoInfo(fp_new_video.name) if fp_new_video else src_video_info
+            # get align video from src video
+            tmp_fo = self.align_method.frame_align(src_video_info, dst_video_info)
+            # update video if need to do align
+            if tmp_fo:
+                fo_new_src_video = tmp_fo
+                src_video_info = VideoInfo(fo_new_src_video.name)
+
+            tmp_fo = self.align_method.frame_align(dst_video_info, src_video_info)
+            if tmp_fo:
+                fo_new_dst_video = tmp_fo
+                dst_video_info = VideoInfo(fo_new_dst_video.name)
 
         # Calculate video quality
         ret = self.eval_method.eval(src_video_info, dst_video_info)
-        
+
         return ret
 
 
@@ -97,7 +103,9 @@ def get_video_score(args):
     
     if args.frame_align_method == "ffmpeg":
         align_method = VideoAlignMethodFfmpeg()
-    elif args.frame_align_method == "None":
+    elif args.frame_align_method == "ocr":
+        align_method = VideoAlignMethodOcr()
+    elif args.frame_align_method != "None":
         raise ValueError("Not supoort such method to align video")
 
     video_eval_tool = VideoEvaluation(eval_method, align_method, args)
@@ -113,7 +121,7 @@ def init_video_argparse():
     parser.add_argument("--video_eval_method", type=str, default="vmaf", choices=["vmaf"], help="the method to evaluate video, like vmaf")
     parser.add_argument("--src_video", type=str, required=True, default=None, help="the path of source video")
     parser.add_argument("--dst_video", type=str, required=True, default=None, help="the path of destination video")
-    parser.add_argument("--frame_align_method", type=str, default="ffmpeg", choices=["None", "ffmpeg"], help="how to do frame alignment. None means not to do frame align")
+    parser.add_argument("--frame_align_method", type=str, default="ffmpeg", choices=["None", "ffmpeg", "ocr"], help="how to do frame alignment. None means not to do frame align")
     parser.add_argument("--model_path", type=str, default=None, help="the path of vmaf model")
     # required by the video format of yuv raw video
     parser.add_argument("--video_size", type=str, default=None, help="the size of video, like 1920x1080. Required by the video format of yuv")
