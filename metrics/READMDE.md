@@ -1,35 +1,10 @@
-# Introduction 
+# Usage
 
-The original intention of this project is to provide an evaluation standard for the OpenNetLab competition. The evaluation objects include video, audio and network.
+The repository provide different tools to evaluate qualities of the video, audio and network.
 
 - For video files, we use tools such as Vmaf to evaluate the quality of the video.
 - For audio files, we use a method based on [Deep Noise Suppresiion](https://github.com/microsoft/DNS-Challenge) to evaluate the quality of the audio.
-- For network files, we evaluate it by calculating the delay and loss rate.
-
-# Getting Started
-## Installation process
-
-Firstly, you should download our repository by running the order below :
-
-```shell
-git clone https://github.com/OpenNetLab/Challenge-Environment.git
-```
-
-Then, you can enter the directory of repository and contruct the environment by running the order below :
-
-```shell
-make all
-```
-
-Lastly, you will find that the image of Challenge-Environment is installed in your machine.
-
-## Software dependencies
-
-We provided the dockerfile to prepare the environment which have already installed all sofware dependencies. If you don't want to use docker, it is neccessary to install these software below :
-
-|         | [ffmpeg](https://github.com/FFmpeg/FFmpeg) | [ffprobe](https://ffmpeg.org/ffprobe.html) | [Vmaf](https://github.com/Netflix/vmaf) | Python |
-| :-----: | :----------------------------------------: | :----------------------------------------: | :-------------------------------------: | :----: |
-| Version |                   4.3.2                    |                   4.3.2                    |                c8e367d8                 |  3.x   |
+- For network files, we evaluate it by calculating the delay.
 
 ## API references
 
@@ -41,7 +16,9 @@ python3 eval.py --src_video {src_video} --dst_video {dst_video}  --dst_audio {ds
 
 For the required arguments, you can find it and correspond description in [here](#Arguments Description).
 
-We also support to evaluate video or audio separately. And you can follow steps below to achieve this.
+What I want to emphasize is the arguments required by evaluating audio will not be public. So you may need to contact the DNSMOS teams if you want to do evaluation of audio locally.
+
+We also support to evaluate video, audio or network separately. And you can follow steps below to achieve this.
 
 ### For video evaluation
 
@@ -103,18 +80,45 @@ python3 eval_network.py -h
 
 ### Arguments Description
 
-|   Arguments    |                         Description                          | eval.py | eval_video.py | eval_audio.py | eval_network.py |
-| :------------: | :----------------------------------------------------------: | :-----: | :-----------: | :-----------: | --------------- |
-| src_video_path |                   the path of source video                   | Sopport |    Sopport    |       /       | /               |
-| dst_video_path |                the path of destination video                 | Sopport |    Sopport    |       /       | /               |
-|     output     |                 the path of output json file                 | Sopport |    Sopport    |    Sopport    | Sopport         |
-|   dst_audio    |         the path of audio that you want to evaluate          | Sopport |       /       |    Sopport    | /               |
-|   dnsmos_uri   |              the uri where you make request to               | Sopport |       /       |    Sopport    | /               |
-|   dnsmos_key   | the key to check the right that you can use the API provided by dnsmos | Sopport |       /       |    Sopport    | /               |
-|     output     |                 the path of output json file                 | Sopport |    Sopport    |    Sopport    | Sopport         |
-|       -h       |               get more description of scripts                | Sopport |    Sopport    |    Sopport    | Sopport         |
+|    Arguments    |                         Description                          | eval.py | eval_video.py | eval_audio.py | eval_network.py |
+| :-------------: | :----------------------------------------------------------: | :-----: | :-----------: | :-----------: | --------------- |
+| src_video_path  |                the path of source video file                 | Support |    Support    |       /       | /               |
+| dst_video_path  |              the path of destination video file              | Support |    Support    |       /       | /               |
+|     output      |                 the path of output json file                 | Support |    Support    |    Support    | Support         |
+|    dst_audio    |                    the path of audio file                    | Support |       /       |    Support    | /               |
+|   dnsmos_uri    |              the uri where you make request to               | Support |       /       |    Support    | /               |
+|   dnsmos_key    | the key to check the right that you can use the API provided by dnsmos | Support |       /       |    Support    | /               |
+| dst_network_log |                 the path of network log file                 | Support |       /       |       /       | Support         |
+|     output      |                 the path of output json file                 | Support |    Support    |    Support    | Support         |
+|       -h        |               get more description of scripts                | Support |    Support    |    Support    | Support         |
 
-# Build and Test
+# Installation process
+
+If you want to make image by yourself, you can follow steps below.
+
+Firstly, you should download our repository by running the order below :
+
+```shell
+git clone https://github.com/OpenNetLab/Challenge-Environment.git
+```
+
+Then, you can enter the directory of repository and contruct the environment by running the order below :
+
+```shell
+make all
+```
+
+Lastly, you will find that the image of Challenge-Environment is installed in your machine.
+
+## Software dependencies
+
+We provided the dockerfile to prepare the environment which have already installed all sofware dependencies. If you don't want to use docker, it is neccessary to install these software below :
+
+|         | [ffmpeg](https://github.com/FFmpeg/FFmpeg) | [ffprobe](https://ffmpeg.org/ffprobe.html) | [Vmaf](https://github.com/Netflix/vmaf) | Python |
+| :-----: | :----------------------------------------: | :----------------------------------------: | :-------------------------------------: | :----: |
+| Version |                   4.3.2                    |                   4.3.2                    |                c8e367d8                 |  3.x   |
+
+## Build and Test
 
 We run the tests based on the tools of pytest. So you can run the order below:
 ```shell
