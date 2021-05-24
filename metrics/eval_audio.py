@@ -33,8 +33,8 @@ class AudioEvaluation():
         dst_audio_info = AudioInfo(dst_audio_path)
 
         # check audio type
-        fp_new_video = self.change_audio_config(dst_audio_info)
-        dst_audio_info = AudioInfo(fp_new_video.name) if fp_new_video else dst_audio_info
+        fo_new_video = self.change_audio_config(dst_audio_info)
+        dst_audio_info = AudioInfo(fo_new_video.name) if fo_new_video else dst_audio_info
 
         score_dict = self.eval_method.eval(dst_audio_info)
 
