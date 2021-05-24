@@ -11,7 +11,7 @@ The repository provide different tools to evaluate qualities of the video, audio
 We ingerated all metrics to a file `eval.py`. So you can just run the order below and get audio and video scores at the same time :
 
 ```shell
-python3 eval.py --src_video {src_video} --dst_video {dst_video}  --dst_audio {dst_audio} --dnsmos_uri {dnsmos_uri} --dnsmos_key {dnsmos_key} --output {output_file_path}
+python3 eval.py --src_video {src_video} --dst_video {dst_video}  --dst_audio {dst_audio} --dnsmos_uri {dnsmos_uri} --dnsmos_key {dnsmos_key} --dst_network_log {dst_network_log}  --output {output_file_path}
 ```
 
 For the required arguments, you can find it and correspond description in [here](#Arguments Description).
