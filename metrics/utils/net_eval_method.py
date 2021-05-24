@@ -40,7 +40,8 @@ class NetEvalMethodNormal(NetEvalMethod):
         # scale delay list
         for ssrc in ssrc_info:
             min_delay = min(ssrc_info[ssrc]["delay_list"])
-            delay_pencentile_95 = np.percentile(ssrc_info[ssrc]["delay_list"], 95)
+            ssrc_info[ssrc]["scale_delay_list"] = [min(self.max_delay, delay) for delay in ssrc_info[ssrc]["delay_list"]]
+            delay_pencentile_95 = np.percentile(ssrc_info[ssrc]["scale_delay_list"], 95)
             ssrc_info[ssrc]["delay_socre"] = (self.max_delay - delay_pencentile_95) / (self.max_delay - min_delay / 2)
         # delay score
         avg_delay_score = np.mean([ssrc_info[ssrc]["delay_socre"] for ssrc in ssrc_info])
