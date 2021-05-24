@@ -372,6 +372,7 @@ align_ocr() {
 
       #frame=$(tesseract $cut_folder/_$filename stdout --psm 7 digits 2>/dev/null | sed -r '/^\s*$/d')
       frame=$(gocr -C 0-9 $cut_folder/_$filename | tr -d '[:space:]')
+      frame=${frame#0}
       rm $cut_folder/_$filename
 
       check_number $frame
