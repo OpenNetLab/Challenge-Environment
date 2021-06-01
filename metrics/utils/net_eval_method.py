@@ -71,8 +71,9 @@ class NetEvalMethodNormal(NetEvalMethod):
         avg_loss_rate = sum(loss_list) / len(net_data)
 
         # calculate result score
-        avg_score = 100 / 2
+        avg_score = 100 / 3
         network_score = avg_score * avg_delay_score + \
-                            avg_score * (1 - avg_recv_rate_score)
+                            avg_score * avg_recv_rate_score + \
+                            avg_score * (1 - avg_loss_rate)
 
         return network_score
