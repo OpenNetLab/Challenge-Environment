@@ -35,14 +35,19 @@ class NetEvalMethodNormal(NetEvalMethod):
                     "time_delta" : -tmp_delay,
                     "delay_list" : [],
                     "received_nbytes" : 0,
-                    "start_send_time" : item["packetInfo"]["header"]["sendTimestamp"],
                     "last_send_time" : item["packetInfo"]["header"]["sendTimestamp"],
-                    "start_recv_time" : item["packetInfo"]["arrivalTimeMs"],
-                    "last_recv_time" : item["packetInfo"]["arrivalTimeMs"]
+                    "last_recv_time" : item["packetInfo"]["arrivalTimeMs"],
+                    "recv_rate" : []
                 }
                 
             ssrc_info[ssrc]["delay_list"].append(ssrc_info[ssrc]["time_delta"] + tmp_delay)
             ssrc_info[ssrc]["received_nbytes"] += item["packetInfo"]["payloadSize"]
+            tmp_send_delta = item["packetInfo"]["header"]["sendTimestamp"] - ssrc_info[ssrc]["last_send_time"]
+            tmp_recv_delta = item["packetInfo"]["arrivalTimeMs"]  - ssrc_info[ssrc]["last_recv_time"]
+            if not tmp_recv_delta or tmp_send_delta > tmp_recv_delta:
+                ssrc_info[ssrc]["recv_rate"].append(0)
+            else:
+                ssrc_info[ssrc]["recv_rate"].append(tmp_send_delta / tmp_recv_delta)
             ssrc_info[ssrc]["last_send_time"] = item["packetInfo"]["header"]["sendTimestamp"]
             ssrc_info[ssrc]["last_recv_time"] = item["packetInfo"]["arrivalTimeMs"]
             
@@ -56,15 +61,7 @@ class NetEvalMethodNormal(NetEvalMethod):
         avg_delay_score = np.mean([ssrc_info[ssrc]["delay_socre"] for ssrc in ssrc_info])
 
         # receive rate score
-        for ssrc in ssrc_info:
-            send_time_delta = ssrc_info[ssrc]["last_send_time"] - ssrc_info[ssrc]["start_send_time"]
-            recv_time_delta = ssrc_info[ssrc]["last_recv_time"] - ssrc_info[ssrc]["start_recv_time"]
-
-            if recv_time_delta < send_time_delta:
-                ssrc_info[ssrc]["recv_rate_score"] = 0
-            else:
-                ssrc_info[ssrc]["recv_rate_score"] = send_time_delta / recv_time_delta
-        avg_recv_rate_score = np.mean([ssrc_info[ssrc]["recv_rate_score"] for ssrc in ssrc_info])
+        avg_recv_rate_score = np.mean([np.mean(ssrc_info[ssrc]["recv_rate"]) for ssrc in ssrc_info])
 
         # higher loss rate, lower score
         loss_list = [item["packetInfo"]["lossRates"] for item in net_data]
