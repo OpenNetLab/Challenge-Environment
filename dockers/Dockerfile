@@ -7,7 +7,7 @@ WORKDIR /home/${USER}
 
 # Install dependency
 RUN apt-get update && apt-get install -y \
-    ffmpeg python3-pip wget unzip
+    ffmpeg python3-pip wget unzip gocr imagemagick
 
 RUN pip3 install pytest numpy requests soundfile
 
