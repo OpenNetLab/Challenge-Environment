@@ -46,6 +46,7 @@ def init_network_argparse():
     parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network.")
     parser.add_argument("--dst_network_log", type=str, required=True, default=None, help="the path of network log.")
     parser.add_argument("--max_delay", type=float, default=400, help="the max packet delay.")
+    parser.add_argument("--ground_recv_rate", type=float, default=500, help="the receive rate of a special scenario ground truth.")
 
     return parser
     
