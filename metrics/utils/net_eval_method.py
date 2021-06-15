@@ -56,7 +56,7 @@ class NetEvalMethodNormal(NetEvalMethod):
 
         # receive rate score
         recv_rate_list = [ssrc_info[ssrc]["avg_recv_rate"] for ssrc in ssrc_info if ssrc_info[ssrc]["avg_recv_rate"] > 0]
-        avg_recv_rate_score = np.mean(recv_rate_list) / self.ground_recv_rate
+        avg_recv_rate_score = min(1, np.mean(recv_rate_list) / self.ground_recv_rate)
 
         # higher loss rate, lower score
         loss_list = [item["packetInfo"]["lossRates"] for item in net_data]
