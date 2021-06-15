@@ -27,6 +27,8 @@ def run_and_check_result(cmd):
     assert "network" in data
     assert type(data["network"]) == float
     assert data["network"] >= 0 and data["network"] <= 100
+    assert type(data["final_score"]) == float
+    assert data["final_score"] >= 0 and data["final_score"] <= 100
 
     # check output file
     with NamedTemporaryFile('w+t') as output:
@@ -43,6 +45,8 @@ def run_and_check_result(cmd):
         assert "network" in data
         assert type(data["network"]) == float
         assert data["network"] >= 0 and data["network"] <= 100
+        assert type(data["final_score"]) == float
+        assert data["final_score"] >= 0 and data["final_score"] <= 100
 
 
 def check_video_score(src_video, dst_video, audio_path, dnsmos_uri, dnsmos_key, dst_network_log):
