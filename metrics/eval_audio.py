@@ -49,7 +49,7 @@ def init_audio_argparse():
     parser.add_argument("--dst_audio", type=str, default=None, required=True, help="the path of destination audio")
     parser.add_argument("--audio_sample_rate", type=str, default='16000', help="the sample rate of audio")
     parser.add_argument("--audio_channel", type=str, default='1', help="the numbers of audio channels")
-    parser.add_argument("--ground_audio", type=float, default=100, help="the audio score of a special scenario ground truth.")
+    parser.add_argument("--ground_audio", type=float, default=-1, help="the audio score of a special scenario ground truth. -1 means not use ground.")
     parser.add_argument("--binarize_bound", type=float, default=0.6, help="the bound to binarize audio score.")
     # for DNSMOS
     parser.add_argument("--dnsmos_uri", type=str, default=None, help="the uri to evaluate audio provided by DNSMOS")

@@ -51,6 +51,8 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         score_dict = resp.json()
         # scale [1, 5] -> [0, 100]
         audio_score = (score_dict["mos"] - 1) / 4 * 100
+        if self.ground_audio < 0:
+            return audio_score
         
         return 100.0 if audio_score > self.ground_audio * self.binarize_bound else .0
     
