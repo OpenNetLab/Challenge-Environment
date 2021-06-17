@@ -3,7 +3,7 @@
 
 import argparse, json
 from eval_video import VideoEvaluation, init_video_argparse, get_video_score
-from eval_audio import AudioEvaluation, init_audio_argparse, get_audio_score
+from eval_audio import AudioEvaluation, init_audio_argparse, get_audio_score, get_remote_ground
 from eval_network import NetworkEvaluation, init_network_argparse, get_network_score
 
 
@@ -22,9 +22,13 @@ def init_argparse():
 
     return args
 
+
 if __name__ == "__main__":
     
     args = init_argparse()
+    if args.scenario:
+        args = get_remote_ground(args)
+    
     out_dict = {}
 
     out_dict["video"] = get_video_score(args)

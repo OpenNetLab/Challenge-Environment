@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import subprocess, json, argparse
+import subprocess, json, argparse, requests
 from tempfile import NamedTemporaryFile
 from utils.audio_info import AudioInfo
 from utils.audio_eval_method import AudioEvalMethod, AudioEvalMethodDNSMOS
@@ -44,6 +44,7 @@ class AudioEvaluation():
 def init_audio_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file")
+    parser.add_argument("--scenario", type=str, default=None, help="the name of scenario")
     # for audio evaluation
     parser.add_argument("--audio_eval_method", type=str, default="dnsmos", choices=["dnsmos"], help="the method to evaluate audio, like DNSMOS")
     parser.add_argument("--dst_audio", type=str, default=None, required=True, help="the path of destination audio")
@@ -72,9 +73,26 @@ def get_audio_score(args):
     return audio_out
 
 
+def get_remote_ground(args):
+    resp = requests.get("http://10.150.147.209:9091/get_ground_truth/%s" % (args.scenario)).text
+    if len(resp) == 0:
+        raise ValueError("Not find scenario of %s" % (args.scenario))
+    resp = json.loads(resp)
+
+    if "ground_audio" in args:
+        args.ground_audio = resp["audio"]
+    if "ground_recv_rate" in args:
+        args.ground_recv_rate = resp["recv_rate"]
+
+    return args
+
+
 if __name__ == "__main__":
     parser = init_audio_argparse()
     args = parser.parse_args()
+    if args.scenario:
+        args = get_remote_ground(args)
+    
     out_dict = {}
     out_dict["audio"] = get_audio_score(args)
         
