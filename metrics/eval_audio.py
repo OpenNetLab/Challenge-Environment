@@ -62,7 +62,7 @@ def get_audio_score(args):
     eval_method = None
 
     if args.audio_eval_method == "dnsmos":
-        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
+        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key, args.ground_audio, args.binarize_bound)
     else:
         raise ValueError("Not supoort such method to evaluate audio")
         

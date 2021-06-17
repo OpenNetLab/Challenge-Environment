@@ -25,7 +25,7 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         super(AudioEvalMethodDNSMOS, self).__init__()
         if not dnsmos_uri or not dnsmos_key:
             raise ValueError("Please specify the arguments dnsmos_uri and dnsmos_key.")
-        
+
         self.eval_name = "dnsmos"
         self.dnsmos_uri = dnsmos_uri
         self.dnsmos_key = dnsmos_key

@@ -29,7 +29,7 @@ def get_network_score(args):
     eval_method = None
 
     if args.network_eval_method == "normal":
-        eval_method = NetEvalMethodNormal(args.max_delay)
+        eval_method = NetEvalMethodNormal(args.max_delay, args.ground_recv_rate)
     else:
         raise ValueError("Not supoort such method to evaluate network")
     
