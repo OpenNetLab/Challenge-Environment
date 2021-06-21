@@ -44,6 +44,7 @@ def init_network_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file. It will print the result in terminal if you don't specify its value.")
     parser.add_argument("--scenario", type=str, default=None, help="the name of scenario")
+    parser.add_argument("--ground_service", type=str, default=None, help="the url where you want to get the score of ground truth")
     # for network evaluation
     parser.add_argument("--network_eval_method", type=str, default="normal", choices=["normal"], help="the method to evaluate network.")
     parser.add_argument("--dst_network_log", type=str, required=True, default=None, help="the path of network log.")
