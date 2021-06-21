@@ -6,6 +6,7 @@ from tempfile import NamedTemporaryFile
 from utils.video_info import VideoInfo
 from utils.video_eval_method import VideoEvalMethodVmaf, VideoEvalMethod
 from utils.video_align_method import VideoAlignMethodFfmpeg, VideoAlignMethod, VideoAlignMethodOcr
+from eval_audio import get_remote_ground
 
 
 description = \
@@ -88,8 +89,11 @@ class VideoEvaluation(object):
 
         # Calculate video quality
         ret = self.eval_method.eval(src_video_info, dst_video_info)
+        # Use ground truth
+        if self.args.ground_video <= 0:
+            return ret
 
-        return ret
+        return max(100.0, 100 * ret / self.args.ground_video)
 
 
 def get_video_score(args):
@@ -117,6 +121,9 @@ def get_video_score(args):
 def init_video_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file")
+    parser.add_argument("--scenario", type=str, default=None, help="the name of scenario")
+    parser.add_argument("--ground_service", type=str, default=None, help="the url where you want to get the score of ground truth")
+    parser.add_argument("--ground_video", type=float, default=-1, help="the video score of a special scenario ground truth. -1 means not use ground")
     # for video evaluation
     parser.add_argument("--video_eval_method", type=str, default="vmaf", choices=["vmaf"], help="the method to evaluate video, like vmaf")
     parser.add_argument("--src_video", type=str, required=True, default=None, help="the path of source video")
@@ -134,6 +141,9 @@ def init_video_argparse():
 if __name__ == "__main__":
     parser = init_video_argparse()
     args = parser.parse_args()
+    if args.scenario:
+        args = get_remote_ground(args)
+
     out_dict = {}  
     out_dict["video"] = get_video_score(args)
         
