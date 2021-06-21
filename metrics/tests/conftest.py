@@ -27,6 +27,7 @@ y4m_videos = [
 def pytest_addoption(parser):
     parser.addoption("--dnsmos_uri", action="store")
     parser.addoption("--dnsmos_key", action="store")
+    parser.addoption("--ground_service", action="store")
 
 
 @pytest.fixture
@@ -37,6 +38,10 @@ def dnsmos_uri(request):
 @pytest.fixture
 def dnsmos_key(request):
     return request.config.getoption("--dnsmos_key")
+
+@pytest.fixture
+def ground_service(request):
+    return request.config.getoption("--ground_service")
 
 
 @pytest.fixture(params=[None, "None", "ffmpeg", "ocr"])
