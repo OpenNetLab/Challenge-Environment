@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import subprocess, json, argparse, requests
+import subprocess, json, argparse, requests, os
 from tempfile import NamedTemporaryFile
 from utils.audio_info import AudioInfo
 from utils.audio_eval_method import AudioEvalMethod, AudioEvalMethodDNSMOS
@@ -36,22 +36,26 @@ class AudioEvaluation():
         fo_new_video = self.change_audio_config(dst_audio_info)
         dst_audio_info = AudioInfo(fo_new_video.name) if fo_new_video else dst_audio_info
 
-        score_dict = self.eval_method.eval(dst_audio_info)
-
-        return score_dict
+        audio_score = self.eval_method.eval(dst_audio_info)
+        # Use ground truth
+        if self.args.ground_audio < 0:
+            return audio_score
+        
+        return 100.0 if audio_score > self.args.ground_audio * self.args.binarize_bound else .0
 
 
 def init_audio_argparse():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--output", type=str, default=None, help="the path of output file")
     parser.add_argument("--scenario", type=str, default=None, help="the name of scenario")
+    parser.add_argument("--ground_service", type=str, default=None, help="the url where you want to get the score of ground truth")
     # for audio evaluation
     parser.add_argument("--audio_eval_method", type=str, default="dnsmos", choices=["dnsmos"], help="the method to evaluate audio, like DNSMOS")
     parser.add_argument("--dst_audio", type=str, default=None, required=True, help="the path of destination audio")
     parser.add_argument("--audio_sample_rate", type=str, default='16000', help="the sample rate of audio")
     parser.add_argument("--audio_channel", type=str, default='1', help="the numbers of audio channels")
-    parser.add_argument("--ground_audio", type=float, default=-1, help="the audio score of a special scenario ground truth. -1 means not use ground.")
-    parser.add_argument("--binarize_bound", type=float, default=0.6, help="the bound to binarize audio score.")
+    parser.add_argument("--ground_audio", type=float, default=-1, help="the audio score of a special scenario ground truth. -1 means not use ground")
+    parser.add_argument("--binarize_bound", type=float, default=0.6, help="the bound to binarize audio score")
     # for DNSMOS
     parser.add_argument("--dnsmos_uri", type=str, default=None, help="the uri to evaluate audio provided by DNSMOS")
     parser.add_argument("--dnsmos_key", type=str, default=None, help="the key to evaluate audio provided by DNSMOS")
@@ -63,7 +67,7 @@ def get_audio_score(args):
     eval_method = None
 
     if args.audio_eval_method == "dnsmos":
-        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key, args.ground_audio, args.binarize_bound)
+        eval_method = AudioEvalMethodDNSMOS(args.dnsmos_uri, args.dnsmos_key)
     else:
         raise ValueError("Not supoort such method to evaluate audio")
         
@@ -74,11 +78,18 @@ def get_audio_score(args):
 
 
 def get_remote_ground(args):
-    resp = requests.get("http://10.150.147.209:9091/get_ground_truth/%s" % (args.scenario)).text
+    if args.ground_service[-4:] == "json":
+        cmd = ["wget", args.ground_service]
+        with open(os.path.split(args.ground_service)[-1], 'r') as f:
+            resp = f.read()
+    else:
+        resp = requests.get("http://%s/get_ground_truth/%s" % (args.ground_service, args.scenario)).text
     if len(resp) == 0:
         raise ValueError("Not find scenario of %s" % (args.scenario))
     resp = json.loads(resp)
 
+    if "ground_video" in args:
+        args.ground_video = resp["video"]
     if "ground_audio" in args:
         args.ground_audio = resp["audio"]
     if "ground_recv_rate" in args:
@@ -90,7 +101,7 @@ def get_remote_ground(args):
 if __name__ == "__main__":
     parser = init_audio_argparse()
     args = parser.parse_args()
-    if args.scenario:
+    if args.scenario and args.ground_service:
         args = get_remote_ground(args)
     
     out_dict = {}

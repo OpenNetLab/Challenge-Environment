@@ -21,7 +21,7 @@ class AudioEvalMethod(ABC):
 
 
 class AudioEvalMethodDNSMOS(AudioEvalMethod):
-    def __init__(self, dnsmos_uri, dnsmos_key, ground_audio=100, binarize_bound=0.6):
+    def __init__(self, dnsmos_uri, dnsmos_key):
         super(AudioEvalMethodDNSMOS, self).__init__()
         if not dnsmos_uri or not dnsmos_key:
             raise ValueError("Please specify the arguments dnsmos_uri and dnsmos_key.")
@@ -29,8 +29,6 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         self.eval_name = "dnsmos"
         self.dnsmos_uri = dnsmos_uri
         self.dnsmos_key = dnsmos_key
-        self.ground_audio = ground_audio
-        self.binarize_bound = binarize_bound
         self.required_sample_rate = ["16000"]
         self.required_channel = ["1"]
 
@@ -51,8 +49,5 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         score_dict = resp.json()
         # scale [1, 5] -> [0, 100]
         audio_score = (score_dict["mos"] - 1) / 4 * 100
-        if self.ground_audio < 0:
-            return audio_score
         
-        return 100.0 if audio_score > self.ground_audio * self.binarize_bound else .0
-    
+        return audio_score
