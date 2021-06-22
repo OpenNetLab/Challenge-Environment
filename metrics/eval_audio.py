@@ -79,9 +79,9 @@ def get_audio_score(args):
 
 def get_remote_ground(args):
     if args.ground_service[-4:] == "json":
-        cmd = ["wget", args.ground_service]
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        with open(os.path.split(args.ground_service)[-1], 'r') as f:
+        with NamedTemporaryFile('w+t') as f:
+            cmd = ["wget", args.ground_service, "-O", f.name]
+            subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             resp = f.read()
             if len(resp) == 0:
                 raise ValueError("Error request to ground service %s" % (args.ground_service))
