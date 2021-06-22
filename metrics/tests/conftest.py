@@ -23,6 +23,8 @@ y4m_videos = [
     }
 ]
 
+scenarios = ["test"]
+
 
 def pytest_addoption(parser):
     parser.addoption("--dnsmos_uri", action="store")
@@ -56,4 +58,9 @@ def y4m_video(request):
 
 @pytest.fixture(params=yuv_videos)
 def yuv_video(request):
+    return request.param
+
+
+@pytest.fixture(params=scenarios)
+def scenario_name(request):
     return request.param

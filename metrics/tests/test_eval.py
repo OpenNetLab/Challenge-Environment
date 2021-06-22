@@ -64,10 +64,10 @@ def check_yuv_video_vmaf(src_video, dst_video, video_size, pixel_format, bitdept
     run_and_check_result(cmd)
 
 
-def check_ground_score(src_video, dst_video, audio_path, dnsmos_uri, dnsmos_key, dst_network_log, ground_service):
+def check_ground_score(src_video, dst_video, audio_path, dnsmos_uri, dnsmos_key, dst_network_log, ground_service, scenario_name):
     cmd = ["python3", file_path, "--src_video", src_video, "--dst_video", dst_video, \
                                  "--dnsmos_uri", dnsmos_uri, "--dnsmos_key", dnsmos_key, "--dst_audio", audio_path, \
-                                 "--dst_network_log", dst_network_log, "--ground_service", ground_service]
+                                 "--dst_network_log", dst_network_log, "--ground_service", ground_service, "--scenario", scenario_name]
     run_and_check_result(cmd)
 
 
@@ -89,6 +89,7 @@ def test_yuv_yuv_compare(dnsmos_uri, dnsmos_key):
                         audio_path=audio_path, dnsmos_uri=dnsmos_uri, dnsmos_key=dnsmos_key, dst_network_log=dst_network_log)
 
 
-def test_ground_service(dnsmos_uri, dnsmos_key, ground_service):
+def test_ground_service(dnsmos_uri, dnsmos_key, ground_service, scenario_name):
     check_ground_score(video_y4m_path, video_y4m_path, audio_path=audio_path, \
-                dnsmos_uri=dnsmos_uri, dnsmos_key=dnsmos_key, dst_network_log=dst_network_log, ground_service=ground_service)
+                dnsmos_uri=dnsmos_uri, dnsmos_key=dnsmos_key, dst_network_log=dst_network_log, \
+                ground_service=ground_service, scenario_name=scenario_name)

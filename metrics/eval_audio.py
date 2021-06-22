@@ -80,20 +80,25 @@ def get_audio_score(args):
 def get_remote_ground(args):
     if args.ground_service[-4:] == "json":
         cmd = ["wget", args.ground_service]
+        subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         with open(os.path.split(args.ground_service)[-1], 'r') as f:
             resp = f.read()
     else:
         resp = requests.get("http://%s/get_ground_truth/%s" % (args.ground_service, args.scenario)).text
     if len(resp) == 0:
-        raise ValueError("Not find scenario of %s" % (args.scenario))
+        raise ValueError("Error ground service" % (args.ground_service))
+    
     resp = json.loads(resp)
+    if args.scenario not in resp:
+        raise ValueError("Not find scenario of %s" % (args.scenario))
+    scenario_score = resp[args.scenario]
 
     if "ground_video" in args:
-        args.ground_video = resp["video"]
+        args.ground_video = scenario_score["video"]
     if "ground_audio" in args:
-        args.ground_audio = resp["audio"]
+        args.ground_audio = scenario_score["audio"]
     if "ground_recv_rate" in args:
-        args.ground_recv_rate = resp["recv_rate"]
+        args.ground_recv_rate = scenario_score["recv_rate"]
 
     return args
 
