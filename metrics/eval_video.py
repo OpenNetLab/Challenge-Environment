@@ -93,7 +93,7 @@ class VideoEvaluation(object):
         if self.args.ground_video <= 0:
             return ret
 
-        return max(100.0, 100 * ret / self.args.ground_video)
+        return min(100.0, 100 * ret / self.args.ground_video)
 
 
 def get_video_score(args):

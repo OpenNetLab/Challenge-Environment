@@ -83,15 +83,17 @@ def get_remote_ground(args):
         subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         with open(os.path.split(args.ground_service)[-1], 'r') as f:
             resp = f.read()
+            if len(resp) == 0:
+                raise ValueError("Error request to ground service %s" % (args.ground_service))
+            resp = json.loads(resp)
+        if args.scenario not in resp:
+            raise ValueError("Not find scenario of %s" % (args.scenario))
+        scenario_score = resp[args.scenario]
     else:
         resp = requests.get("http://%s/get_ground_truth/%s" % (args.ground_service, args.scenario)).text
-    if len(resp) == 0:
-        raise ValueError("Error ground service" % (args.ground_service))
-    
-    resp = json.loads(resp)
-    if args.scenario not in resp:
-        raise ValueError("Not find scenario of %s" % (args.scenario))
-    scenario_score = resp[args.scenario]
+        if len(resp) == 0:
+            raise ValueError("Error request to ground service %s" % (args.ground_service))
+        scenario_score = json.loads(resp)    
 
     if "ground_video" in args:
         args.ground_video = scenario_score["video"]
