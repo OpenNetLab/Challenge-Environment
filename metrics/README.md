@@ -18,6 +18,14 @@ For the required arguments, you can find it and correspond description in [here]
 
 What I want to emphasize is the arguments required by evaluating audio will not be public. So you may need to contact the DNSMOS teams if you want to do evaluation of audio locally.
 
+For the offline evaluation, we will set ground truth for every part of score according to the description of [challenge-HOWTO](https://github.com/OpenNetLab/challenge-HOWTO#final-score). So there are some new arguments for the feature of ground truth.
+
+- scenario : the scenario's name that you are running. Need to use with argument of ground_service
+- ground_service : the service address that will provide the ground truth scores of all scenarios. Need to use with argument of scenario
+- ground_video : the video score of ground truth
+- ground_audio : the audio score of ground truth
+- ground_recv_rate : the receive rate of ground truth
+
 We also support to evaluate video, audio or network separately. And you can follow steps below to achieve this.
 
 ### For video evaluation
@@ -25,7 +33,7 @@ We also support to evaluate video, audio or network separately. And you can foll
 For the type of .mp4, .y4m, you can run order below to get the vamp score of two videos quickly :
 
 ```shell
-python3 evaluate_video.py --src_video {src_video_path} --dst_video {dst_video_path} --output {output_file_path}
+python3 evaluate_video.py --src_video {src_video_path} --dst_video {dst_video_path} --output {output_file_path} --frame_align_method {frame_align_method}
 ```
 
 For the required arguments, you can find it and correspond description in [here](#Arguments Description)
@@ -35,6 +43,8 @@ For the type of .yuv, you need to specify the optional arguments below :
 - video_size : the size of video, like 1920x1080
 - pixel_format : the pixel format of video, like  420, 422, 444
 - bitdepth : the bitdepth of video, like 8, 10, 12
+
+For the mothed of frame align, we provide 3 kinds of method to achieve it like None, ffmpeg and ocr. The method of ocr will be used in offline evaluation.
 
 For more detail about the arguments, you can run order below to get description for video :
 
@@ -78,7 +88,7 @@ For more detail about the arguments, you can run order below to get description 
 python3 eval_network.py -h
 ```
 
-### Arguments Description
+### Necessary Arguments Description
 
 |    Arguments    |                         Description                          | eval.py | eval_video.py | eval_audio.py | eval_network.py |
 | :-------------: | :----------------------------------------------------------: | :-----: | :-----------: | :-----------: | --------------- |
