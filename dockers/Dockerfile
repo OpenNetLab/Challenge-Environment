@@ -22,6 +22,8 @@ COPY metrics metrics
 RUN pip3 install gym
 # PyTorch
 RUN pip3 install torch
+#Protobuf
+RUN pip3 install protobuf==3.6.1
 # TensorFlow
-RUN pip3 install tensorflow
+RUN pip3 install tensorflow==1.8.0
 
