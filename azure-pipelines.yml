@@ -20,7 +20,8 @@ steps:
 
 - script: make
   displayName: 'build challenge environment'
-
+  
+# Use audio data to check if the program is working properly
 - script: docker run --rm challenge-env python3 -m pytest metrics/tests/test_eval_video.py
   displayName: 'Run test'
 
