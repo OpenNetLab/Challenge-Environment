@@ -43,11 +43,17 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
             print('Only sampling rate of 16000 is supported as of now')
         data = {"data": audio.tolist()}
         input_data = json.dumps(data)
+        """
+        Dec 6, 2022 Updates:
+        We submit request to DNSMOS API here and obtain the audio raw scores
+        However, the API is down now, we return 100 points directly.
+
         # Make the request and display the response
         u = urlparse(self.dnsmos_uri)
-        # resp = requests.post(urljoin("https://" + u.netloc, 'score'), data=input_data, headers=headers)
-        # score_dict = resp.json()
+        resp = requests.post(urljoin("https://" + u.netloc, 'score'), data=input_data, headers=headers)
+        score_dict = resp.json()
         # scale [1, 5] -> [0, 100]
-        # audio_score = (score_dict["mos"] - 1) / 4 * 100 
+        audio_score = (score_dict["mos"] - 1) / 4 * 100
+        """
         audio_score = 100
         return audio_score
