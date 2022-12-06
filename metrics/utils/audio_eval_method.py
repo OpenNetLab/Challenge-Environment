@@ -55,6 +55,6 @@ class AudioEvalMethodDNSMOS(AudioEvalMethod):
         # scale [1, 5] -> [0, 100]
         audio_score = (score_dict["mos"] - 1) / 4 * 100
         """
-        audio_score = 100
+        audio_score = 100.0
         
         return audio_score
