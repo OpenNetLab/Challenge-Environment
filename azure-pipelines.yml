@@ -17,10 +17,10 @@ pool:
 steps:
 
 - checkout: self
-  
+
 - script: make
   displayName: 'build challenge environment'
-  
+
 - script: docker run --rm challenge-env python3 -m pytest metrics/tests --dnsmos_uri $(dnsmosURI) --dnsmos_key $(dnsmosKey) --ground_service $(groundService)
   displayName: 'Run test'
 
