@@ -32,11 +32,10 @@ if __name__ == "__main__":
     out_dict = {}
 
     out_dict["video"] = get_video_score(args)
-    out_dict["audio"] = get_audio_score(args)
     out_dict["network"] = get_network_score(args)
     # final_score = 0.2 * video + 0.1 * audio + (0.2 * delay_score + 0.2 * recv_rate_score + 0.3 * loss_score)
-    out_dict["final_score"] = 0.2 * out_dict["video"] + 0.1 * out_dict["audio"] + out_dict["network"]
-
+    # We don't consider audio now. Give full score for the audio directly.
+    out_dict["final_score"] = 0.2 * out_dict["video"] + out_dict["network"] + 10
     if args.output:
         with open(args.output, 'w') as f:
             f.write(json.dumps(out_dict))
