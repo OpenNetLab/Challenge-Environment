@@ -17,7 +17,7 @@ pool:
 steps:
 
 - checkout: self
-
+  
 - script: make
   displayName: 'build challenge environment'
   
